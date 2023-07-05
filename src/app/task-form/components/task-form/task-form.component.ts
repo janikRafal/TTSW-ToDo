@@ -25,9 +25,10 @@ export class TaskFormComponent {
     const { title, description } = this.taskForm.value;
 
     if (this.taskForm.invalid || !title) {
+      this.taskForm.markAllAsTouched();
       return;
     }
-    console.log('gowno');
+
     const newTask = {
       id: uuid.v4(),
       title,
