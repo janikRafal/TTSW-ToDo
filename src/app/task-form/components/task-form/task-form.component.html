@@ -1,12 +1,17 @@
 <h3>Add a new task</h3>
-<form (submit)="onFormSubmit($event)">
-  <app-input>
-    inputType="text" label="Title" [control]="$any(taskForm.get('title'))"
+<form (submit)="onSubmit($event)">
+  <app-input
+    inputType="text"
+    label="Title"
+    [control]="$any(taskForm.get('title'))"
+  >
   </app-input>
 
-  <app-input>
-    inputType="text" label="Description"
+  <app-input
+    controlType="textarea"
+    label="Description"
     [control]="$any(taskForm.get('description'))"
+  >
   </app-input>
 
   <div><button>Submit</button></div>

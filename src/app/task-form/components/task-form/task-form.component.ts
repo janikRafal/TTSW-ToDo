@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TaskServiceService } from 'src/app/services/task-service.service';
+import { Router } from '@angular/router';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-task-form',
@@ -13,10 +15,27 @@ export class TaskFormComponent {
     description: new FormControl(''),
   });
 
-  constructor(private taskService: TaskServiceService) {}
+  constructor(
+    private taskService: TaskServiceService,
+    private router: Router
+  ) {}
 
-  onFormSubmit(event: Event) {
+  onSubmit(event: Event) {
     event.preventDefault();
-    console.log('Yes yes gps ma kudlaty pies');
+    const { title, description } = this.taskForm.value;
+
+    if (this.taskForm.invalid || !title) {
+      return;
+    }
+    console.log('gowno');
+    const newTask = {
+      id: uuid.v4(),
+      title,
+      description: description || '',
+      status: false,
+    };
+
+    this.taskService.addNewTask(newTask);
+    this.router.navigate(['/tasks']);
   }
 }

@@ -1,0 +1,17 @@
+<div>
+  <label>{{ label }}</label>
+  <input
+    *ngIf="controlType === 'input'"
+    [type]="inputType"
+    [formControl]="control"
+  />
+
+  <textarea
+    *ngIf="controlType === 'textarea'"
+    [formControl]="control"
+  ></textarea>
+
+  <div *ngIf="showErrors()">
+    <p *ngIf="control.errors?.['required']">Field is required</p>
+  </div>
+</div>
