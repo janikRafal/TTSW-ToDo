@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './shared/not-found/not-found.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    redirectTo: '/tasks',
+    pathMatch: 'full',
+  },
   {
     path: 'tasks',
     loadChildren: () =>
@@ -19,6 +25,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./task-form/task-form.module').then((mod) => mod.TaskFormModule),
   },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
