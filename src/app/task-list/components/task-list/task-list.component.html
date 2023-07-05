@@ -4,5 +4,9 @@
       <a [routerLink]="'/task/' + task.id">{{ task.title }}</a>
     </h3>
     <p>{{ task.description }}</p>
+    <button (click)="onTaskDelete(task.id, task.title)">Remove</button>
   </div>
+  <br />
+
+  <a routerLink="/add-task">Add new task</a>
 </div>

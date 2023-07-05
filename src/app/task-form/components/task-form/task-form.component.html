@@ -1,1 +1,13 @@
-<p>task-form works!</p>
+<h3>Add a new task</h3>
+<form (submit)="onFormSubmit($event)">
+  <app-input>
+    inputType="text" label="Title" [control]="$any(taskForm.get('title'))"
+  </app-input>
+
+  <app-input>
+    inputType="text" label="Description"
+    [control]="$any(taskForm.get('description'))"
+  </app-input>
+
+  <div><button>Submit</button></div>
+</form>
