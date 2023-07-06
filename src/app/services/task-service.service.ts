@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-
+import { BehaviorSubject } from 'rxjs';
 import { Task } from '../models/task';
-import * as uuid from 'uuid';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskServiceService {
-  tasks: Task[] = [
+  private taskList = new BehaviorSubject<Task[]>([
     {
       id: '0c65b98b-ae4d-4b50-bcc3-249cad3ac9a4',
       title: 'Add modal window which confirms task deleting',
@@ -31,7 +31,7 @@ export class TaskServiceService {
       id: '7387b17c-f4ac-4f15-a70c-e0928f685060',
       title: 'Create task-detail page',
       description: 'You still have to create task-detail page!',
-      status: false,
+      status: true,
     },
     {
       id: '7e670401-d32e-4e36-8968-d23c967d9200',
@@ -40,52 +40,43 @@ export class TaskServiceService {
         'If you finished, send your work to TTSW group and wait for feedback',
       status: false,
     },
-  ];
+  ]);
+
+  tasks$ = this.taskList.asObservable();
 
   constructor() {}
 
   getAllTasks() {
-    return this.tasks;
+    return this.tasks$;
   }
 
   getTaskById(id: string) {
-    return this.tasks.find((task) => task.id === id);
+    return this.tasks$.pipe(
+      map((tasks) => tasks.find((task) => task.id === id))
+    );
   }
 
   addNewTask(task: Task) {
-    this.tasks.push(task);
+    this.taskList.next([...this.taskList.value, task]);
   }
 
   editTaskById(id: string, data: { title: string; description: string }) {
-    this.tasks = this.tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          title: data.title,
-          description: data.description,
-        };
-      } else {
-        return task;
-      }
-    });
+    this.taskList.next(
+      this.taskList.value.map((task) =>
+        task.id === id ? { ...task, ...data } : task
+      )
+    );
   }
 
   changeTaskStatusById(id: string) {
-    this.tasks = this.tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          status: !task.status,
-        };
-      } else {
-        return task;
-      }
-    });
-
-    console.log(this.tasks);
+    this.taskList.next(
+      this.taskList.value.map((task) =>
+        task.id === id ? { ...task, status: !task.status } : task
+      )
+    );
   }
 
   removeTaskById(id: string) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
+    this.taskList.next(this.taskList.value.filter((task) => task.id !== id));
   }
 }

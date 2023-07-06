@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Task } from 'src/app/models/task';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-detail',
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.scss'],
 })
-export class TaskDetailComponent {
+export class TaskDetailComponent implements OnInit, OnDestroy {
   taskId!: string;
   task!: Task | undefined;
+  taskSubscription!: Subscription;
 
   constructor(
     private taskService: TaskServiceService,
@@ -20,13 +22,23 @@ export class TaskDetailComponent {
   ) {}
 
   ngOnInit() {
-    const taskId = this.route.snapshot.paramMap.get('id')!;
+    this.taskSubscription = this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          const taskId = params.get('id')!;
+          return this.taskService.getTaskById(taskId);
+        })
+      )
+      .subscribe((task) => (this.task = task));
+  }
 
-    this.task = this.taskService.getTaskById(taskId);
+  ngOnDestroy() {
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
+    }
   }
 
   onChangeStatus(taskId: string) {
-    console.log(taskId);
     this.taskService.changeTaskStatusById(taskId);
     this.router.navigate(['/tasks']);
   }

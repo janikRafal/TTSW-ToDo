@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Task } from 'src/app/models/task';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.component.html',
   styleUrls: ['./task-edit.component.scss'],
 })
-export class TaskEditComponent {
+export class TaskEditComponent implements OnInit, OnDestroy {
   task!: Task | undefined;
+  taskSubscription!: Subscription;
   taskForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
     description: new FormControl(''),
@@ -24,18 +26,31 @@ export class TaskEditComponent {
   ) {}
 
   ngOnInit() {
-    const taskId = this.route.snapshot.paramMap.get('id');
-    if (!taskId) {
-      throw new Error('Task ID is missing in the route');
-    }
+    this.taskSubscription = this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          const taskId = params.get('id');
+          if (!taskId) {
+            throw new Error('Task ID is missing in the route');
+          }
+          return this.taskService.getTaskById(taskId);
+        })
+      )
+      .subscribe((task) => {
+        this.task = task;
 
-    this.task = this.taskService.getTaskById(taskId);
-
-    if (this.task) {
-      this.taskForm.patchValue({
-        title: this.task.title,
-        description: this.task.description,
+        if (this.task) {
+          this.taskForm.patchValue({
+            title: this.task.title,
+            description: this.task.description,
+          });
+        }
       });
+  }
+
+  ngOnDestroy() {
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
     }
   }
 
@@ -58,6 +73,8 @@ export class TaskEditComponent {
   }
 
   onGoBack() {
-    this.router.navigate(['/tasks']);
+    if (this.task?.id) {
+      this.router.navigate([`task/${this.task.id}`]);
+    } else this.router.navigate(['/tasks']);
   }
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task';
@@ -8,8 +9,9 @@ import { Task } from 'src/app/models/task';
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
 })
-export class TaskListComponent {
+export class TaskListComponent implements OnInit, OnDestroy {
   tasks!: Task[];
+  tasksSubscription!: Subscription;
 
   constructor(
     private taskService: TaskServiceService,
@@ -17,7 +19,15 @@ export class TaskListComponent {
   ) {}
 
   ngOnInit() {
-    this.tasks = this.taskService.getAllTasks();
+    this.tasksSubscription = this.taskService
+      .getAllTasks()
+      .subscribe((tasks) => (this.tasks = tasks));
+  }
+
+  ngOnDestroy() {
+    if (this.tasksSubscription) {
+      this.tasksSubscription.unsubscribe();
+    }
   }
 
   onTaskDetail(taskId: string) {
@@ -33,7 +43,6 @@ export class TaskListComponent {
 
     if (confirm(text) === true) {
       this.taskService.removeTaskById(taskId);
-      this.tasks = this.taskService.getAllTasks();
     } else {
       return;
     }

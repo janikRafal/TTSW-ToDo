@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TaskServiceService } from './task-service.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -26,10 +27,14 @@ export class TaskGuard {
     | boolean
     | UrlTree {
     const taskId = route.params['id'];
-    if (this.taskService.getTaskById(taskId)) {
-      return true;
-    } else {
-      return this.router.parseUrl('/not-found');
-    }
+    return this.taskService.getTaskById(taskId).pipe(
+      map((task) => {
+        if (task) {
+          return true;
+        } else {
+          return this.router.parseUrl('/not-found');
+        }
+      })
+    );
   }
 }
