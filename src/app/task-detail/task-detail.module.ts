@@ -4,8 +4,23 @@ import { CommonModule } from '@angular/common';
 import { TaskDetailRoutingModule } from './task-detail-routing.module';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
 
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { ButtonModule } from 'primeng/button';
+import { PanelModule } from 'primeng/panel';
+import { TaskEditComponent } from './components/task-edit/task-edit.component';
+import { SharedModule } from '../shared/shared.module';
+
 @NgModule({
-  declarations: [TaskDetailComponent],
-  imports: [CommonModule, TaskDetailRoutingModule],
+  declarations: [TaskDetailComponent, TaskEditComponent],
+  imports: [
+    CommonModule,
+    TaskDetailRoutingModule,
+    CardModule,
+    DividerModule,
+    ButtonModule,
+    PanelModule,
+    SharedModule,
+  ],
 })
 export class TaskDetailModule {}

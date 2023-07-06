@@ -19,13 +19,13 @@ export class TaskServiceService {
       id: '7c91894d-f08f-40f0-b17c-5575c3e18892',
       title: 'Create task-list page',
       description: 'You still have to create task-list page!',
-      status: false,
+      status: true,
     },
     {
       id: '4195aa58-3d24-4d11-828e-17042f02c08a',
       title: 'Create task-form page',
       description: 'You still have to create task-form page!',
-      status: false,
+      status: true,
     },
     {
       id: '7387b17c-f4ac-4f15-a70c-e0928f685060',
@@ -54,6 +54,35 @@ export class TaskServiceService {
 
   addNewTask(task: Task) {
     this.tasks.push(task);
+  }
+
+  editTaskById(id: string, data: { title: string; description: string }) {
+    this.tasks = this.tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          title: data.title,
+          description: data.description,
+        };
+      } else {
+        return task;
+      }
+    });
+  }
+
+  changeTaskStatusById(id: string) {
+    this.tasks = this.tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          status: !task.status,
+        };
+      } else {
+        return task;
+      }
+    });
+
+    console.log(this.tasks);
   }
 
   removeTaskById(id: string) {

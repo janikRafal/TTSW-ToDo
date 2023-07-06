@@ -1,17 +1,34 @@
-<div>
-  <label>{{ label }}</label>
-  <input
-    *ngIf="controlType === 'input'"
-    [type]="inputType"
-    [formControl]="control"
-  />
-
-  <textarea
-    *ngIf="controlType === 'textarea'"
-    [formControl]="control"
-  ></textarea>
+<div class="my-5" *ngIf="controlType === 'input'">
+  <span class="p-float-label">
+    <input
+      id="title"
+      pInputText
+      class="p-inputtext-sm"
+      [type]="inputType"
+      [formControl]="control"
+    />
+    <label htmlFor="title">Title</label>
+  </span>
 
   <div *ngIf="showErrors()">
-    <p *ngIf="control.errors?.['required']">Field is required</p>
+    <small
+      class="error-message"
+      *ngIf="control.errors?.['required']"
+      id="title-help"
+      >Field is required</small
+    >
   </div>
+</div>
+
+<div class="my-5" *ngIf="controlType === 'textarea'">
+  <span class="p-float-label">
+    <textarea
+      pInputTextarea
+      [autoResize]="true"
+      id="description"
+      [formControl]="control"
+    ></textarea>
+
+    <label htmlFor="description">Description</label>
+  </span>
 </div>

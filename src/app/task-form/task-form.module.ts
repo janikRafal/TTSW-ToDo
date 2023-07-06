@@ -6,6 +6,10 @@ import { TaskFormRoutingModule } from './task-form-routing.module';
 import { TaskFormComponent } from './components/task-form/task-form.component';
 import { SharedModule } from '../shared/shared.module';
 
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { ButtonModule } from 'primeng/button';
+
 @NgModule({
   declarations: [TaskFormComponent],
   imports: [
@@ -13,6 +17,9 @@ import { SharedModule } from '../shared/shared.module';
     TaskFormRoutingModule,
     ReactiveFormsModule,
     SharedModule,
+    CardModule,
+    DividerModule,
+    ButtonModule,
   ],
 })
 export class TaskFormModule {}

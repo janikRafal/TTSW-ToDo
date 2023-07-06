@@ -1,4 +1,36 @@
-<div>
-  <h3>{{ task?.title }}</h3>
-  <p>{{ task?.description }}</p>
-</div>
+<p-card
+  [style]="{ width: 'auto', 'max-width': '900px', margin: '0 auto' }"
+  header="Task detail"
+>
+  <p-divider></p-divider>
+  <p-panel styleClass="mb-4" [header]="task?.title">
+    <p>
+      {{ task?.description }}
+    </p>
+  </p-panel>
+
+  <div class="flex justify-content-end">
+    <p-button
+      label="Go back"
+      icon="pi pi-arrow-left"
+      styleClass="p-button-sm p-button-warning mr-2"
+      (click)="onGoBack()"
+    ></p-button>
+    <p-button
+      label="Edit"
+      icon="pi pi-pencil"
+      [routerLink]="['edit']"
+      styleClass="p-button-sm p-button-info mr-2"
+    ></p-button>
+    <p-button
+      [label]="task?.status ? 'Mark as incomplete' : 'Mark as complete'"
+      icon="pi pi-check"
+      [styleClass]="
+        task?.status
+          ? 'p-button-sm p-button-warning'
+          : 'p-button-sm p-button-success'
+      "
+      (click)="onChangeStatus(task!.id)"
+    ></p-button>
+  </div>
+</p-card>

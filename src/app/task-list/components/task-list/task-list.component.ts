@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-
 import { TaskServiceService } from 'src/app/services/task-service.service';
+import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task';
 
 @Component({
@@ -11,10 +11,21 @@ import { Task } from 'src/app/models/task';
 export class TaskListComponent {
   tasks!: Task[];
 
-  constructor(private taskService: TaskServiceService) {}
+  constructor(
+    private taskService: TaskServiceService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.tasks = this.taskService.getAllTasks();
+  }
+
+  onTaskDetail(taskId: string) {
+    this.router.navigate([`/task/${taskId}`]);
+  }
+
+  onAddButtonClick() {
+    this.router.navigate(['/add-task']);
   }
 
   onTaskDelete(taskId: string, taskTitle: string): void {

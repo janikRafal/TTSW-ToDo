@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { TaskServiceService } from 'src/app/services/task-service.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Task } from 'src/app/models/task';
 
 @Component({
@@ -15,12 +15,23 @@ export class TaskDetailComponent {
 
   constructor(
     private taskService: TaskServiceService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
     const taskId = this.route.snapshot.paramMap.get('id')!;
 
     this.task = this.taskService.getTaskById(taskId);
+  }
+
+  onChangeStatus(taskId: string) {
+    console.log(taskId);
+    this.taskService.changeTaskStatusById(taskId);
+    this.router.navigate(['/tasks']);
+  }
+
+  onGoBack() {
+    this.router.navigate(['/tasks']);
   }
 }

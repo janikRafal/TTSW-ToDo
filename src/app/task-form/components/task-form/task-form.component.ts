@@ -39,4 +39,8 @@ export class TaskFormComponent {
     this.taskService.addNewTask(newTask);
     this.router.navigate(['/tasks']);
   }
+
+  onCancel() {
+    this.router.navigate(['/tasks']);
+  }
 }
