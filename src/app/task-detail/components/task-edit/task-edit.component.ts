@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Task } from 'src/app/models/task';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-edit',
@@ -13,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
 })
 export class TaskEditComponent implements OnInit, OnDestroy {
   task!: Task | undefined;
-  taskSubscription!: Subscription;
+  private destroy$ = new Subject<void>();
   taskForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
     description: new FormControl(''),
@@ -26,7 +26,7 @@ export class TaskEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.taskSubscription = this.route.paramMap
+    this.route.paramMap
       .pipe(
         switchMap((params) => {
           const taskId = params.get('id');
@@ -34,7 +34,8 @@ export class TaskEditComponent implements OnInit, OnDestroy {
             throw new Error('Task ID is missing in the route');
           }
           return this.taskService.getTaskById(taskId);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((task) => {
         this.task = task;
@@ -49,9 +50,8 @@ export class TaskEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.taskSubscription) {
-      this.taskSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSubmit(event: Event) {

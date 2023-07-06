@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task';
@@ -11,7 +12,7 @@ import { Task } from 'src/app/models/task';
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   tasks!: Task[];
-  tasksSubscription!: Subscription;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private taskService: TaskServiceService,
@@ -19,15 +20,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.tasksSubscription = this.taskService
+    this.taskService
       .getAllTasks()
+      .pipe(takeUntil(this.destroy$))
       .subscribe((tasks) => (this.tasks = tasks));
   }
 
   ngOnDestroy() {
-    if (this.tasksSubscription) {
-      this.tasksSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onTaskDetail(taskId: string) {

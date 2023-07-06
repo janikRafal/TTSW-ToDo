@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Task } from 'src/app/models/task';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-detail',
@@ -13,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
 export class TaskDetailComponent implements OnInit, OnDestroy {
   taskId!: string;
   task!: Task | undefined;
-  taskSubscription!: Subscription;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private taskService: TaskServiceService,
@@ -22,20 +22,20 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.taskSubscription = this.route.paramMap
+    this.route.paramMap
       .pipe(
         switchMap((params) => {
           const taskId = params.get('id')!;
           return this.taskService.getTaskById(taskId);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((task) => (this.task = task));
   }
 
   ngOnDestroy() {
-    if (this.taskSubscription) {
-      this.taskSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onChangeStatus(taskId: string) {

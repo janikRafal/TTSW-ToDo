@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Router,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { Router, ActivatedRouteSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TaskServiceService } from './task-service.service';
 import { map } from 'rxjs/operators';
@@ -19,8 +14,7 @@ export class TaskGuard {
   ) {}
 
   canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    route: ActivatedRouteSnapshot
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
