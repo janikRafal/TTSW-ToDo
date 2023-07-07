@@ -29,7 +29,7 @@ export class TaskFormComponent {
     const newTask = {
       id: uuid.v4(),
       title,
-      description: description || '',
+      description: description ?? '',
       status: false,
     };
 
