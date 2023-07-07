@@ -9,10 +9,16 @@ import { map } from 'rxjs/operators';
 export class TaskService {
   private taskList = new BehaviorSubject<ITask[]>([
     {
+      id: '1c16179f-38ea-433d-9600-50226a7172ba',
+      title: 'Refactoring and improvements',
+      description: "Refactor your code and use Marek's hints",
+      status: false,
+    },
+    {
       id: '0c65b98b-ae4d-4b50-bcc3-249cad3ac9a4',
       title: 'Add modal window which confirms task deleting',
       description:
-        'You should add modal window on task-list view, now you have an alert.',
+        'You should add modal window on task-list view, now you have an alert',
       status: false,
     },
     {
@@ -45,11 +51,7 @@ export class TaskService {
   tasks$ = this.taskList.asObservable();
 
   constructor() {
-    this.taskList.next(
-      this.taskList.value.sort((a, b) =>
-        a.status === b.status ? 0 : a.status ? 1 : -1
-      )
-    );
+    this.taskList.next(this.sortTasks(this.taskList.value));
   }
 
   private sortTasks(tasks: ITask[]): ITask[] {
