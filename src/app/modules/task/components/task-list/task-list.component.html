@@ -1,4 +1,4 @@
-<div class="flex align-items-center justify-content-end flex-wrap">
+<div class="flex align-items-center justify-content-end">
   <span>Add a new task</span>
   <p-button
     icon="pi pi-plus"
@@ -10,35 +10,39 @@
 <p-dataView #dv [value]="tasks">
   <ng-template let-task pTemplate="listItem">
     <div class="col-12">
-      <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-        <i
-          style="font-size: 2rem"
-          class="pi"
-          [ngClass]="{
-            'pi-check-circle text-green-500': task.status,
-            'pi-times-circle text-yellow-500': !task.status
-          }"
-        ></i>
+      <div class="flex flex-column md:flex-row md:align-items-center p-3 gap-4">
         <div
-          class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+          class="flex flex-column sm:flex-row justify-content-between align-items-center flex-1 gap-4"
         >
           <div
-            class="flex flex-column align-items-center sm:align-items-start gap-3"
+            class="flex align-items-start md:align-items-center justify-content-start w-full gap-3"
           >
-            <div class="text-xl text-900">{{ task.title }}</div>
+            <i
+              style="font-size: 2rem"
+              class="pi"
+              [ngClass]="{
+                'pi-check-circle text-green-500': task.status,
+                'pi-times-circle text-yellow-500': !task.status
+              }"
+            ></i>
+            <div
+              class="flex flex-column align-items-center sm:align-items-start gap-3"
+            >
+              <div class="text-xl text-900">{{ task.title }}</div>
+            </div>
           </div>
           <div
-            class="flex align-items-center sm:align-items-end gap-3 sm:gap-2"
+            class="flex align-items-center w-full sm:w-auto justify-content-end gap-3"
           >
             <p-button
               icon="pi pi-trash"
               (click)="onTaskDelete(task.id, task.title)"
-              styleClass="p-button-rounded p-button-danger mr-2"
+              styleClass="p-button-rounded p-button-danger"
               pTooltip="Delete task"
               tooltipPosition="bottom"
             ></p-button>
             <p-button
-              icon="pi pi-chevron-circle-right"
+              icon="pi pi-search"
               (click)="onTaskDetail(task.id)"
               styleClass="p-button-rounded"
               pTooltip="Task details"

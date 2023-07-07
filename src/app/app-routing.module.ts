@@ -5,7 +5,12 @@ import { NotFoundComponent } from './shared/not-found/not-found.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/todo',
+    redirectTo: '/todo/task-list',
+    pathMatch: 'full',
+  },
+  {
+    path: 'todo',
+    redirectTo: '/todo/task-list',
     pathMatch: 'full',
   },
   {

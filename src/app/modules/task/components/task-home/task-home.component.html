@@ -1,4 +1,6 @@
-<p-card [style]="{ width: '100%' }" header="List of all tasks">
+<p-card
+  [header]="pageHeader ? pageHeader : '!!!!!!! Make dynamic headers !!!!!!!'"
+>
   <p-divider></p-divider>
   <router-outlet></router-outlet>
 </p-card>

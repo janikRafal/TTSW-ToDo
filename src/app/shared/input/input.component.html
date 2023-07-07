@@ -1,18 +1,18 @@
-<div class="my-5" *ngIf="controlType === 'input'">
-  <span class="p-float-label">
+<div *ngIf="controlType === 'input'">
+  <span class="p-float-label mt-5">
     <input
+      class="w-full lg:w-6"
       id="title"
       pInputText
-      class="p-inputtext-sm"
       [type]="inputType"
       [formControl]="control"
     />
     <label htmlFor="title">Title</label>
   </span>
 
-  <div *ngIf="showErrors()">
+  <div class="w-full lg:w-6 pl-2" *ngIf="showErrors()">
     <small
-      class="error-message"
+      class="text-red-500"
       *ngIf="control.errors?.['required']"
       id="title-help"
       >Field is required</small
@@ -20,9 +20,10 @@
   </div>
 </div>
 
-<div class="my-5" *ngIf="controlType === 'textarea'">
-  <span class="p-float-label">
+<div *ngIf="controlType === 'textarea'">
+  <span class="p-float-label my-5">
     <textarea
+      class="w-full h-15rem"
       pInputTextarea
       [autoResize]="true"
       id="description"
