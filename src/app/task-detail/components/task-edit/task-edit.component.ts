@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { TaskServiceService } from 'src/app/services/task-service.service';
+import { TaskService } from 'src/app/services/task.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Task } from 'src/app/models/task';
+import { ITask } from 'src/app/models/task';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
@@ -12,7 +12,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
   styleUrls: ['./task-edit.component.scss'],
 })
 export class TaskEditComponent implements OnInit, OnDestroy {
-  task!: Task | undefined;
+  task!: ITask | undefined;
   private destroy$ = new Subject<void>();
   taskForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
@@ -20,7 +20,7 @@ export class TaskEditComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private taskService: TaskServiceService,
+    private taskService: TaskService,
     private route: ActivatedRoute,
     private router: Router
   ) {}

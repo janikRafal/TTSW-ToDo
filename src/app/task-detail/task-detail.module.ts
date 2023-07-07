@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { TaskEditComponent } from './components/task-edit/task-edit.component';
 import { SharedModule } from '../shared/shared.module';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [TaskDetailComponent, TaskEditComponent],
@@ -21,6 +22,7 @@ import { SharedModule } from '../shared/shared.module';
     ButtonModule,
     PanelModule,
     SharedModule,
+    TooltipModule,
   ],
 })
 export class TaskDetailModule {}

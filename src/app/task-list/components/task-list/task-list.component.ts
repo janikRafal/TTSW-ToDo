@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs';
-import { TaskServiceService } from 'src/app/services/task-service.service';
+import { TaskService } from 'src/app/services/task.service';
 import { Router } from '@angular/router';
-import { Task } from 'src/app/models/task';
+import { ITask } from 'src/app/models/task';
 
 @Component({
   selector: 'app-task-list',
@@ -11,13 +11,10 @@ import { Task } from 'src/app/models/task';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit, OnDestroy {
-  tasks!: Task[];
+  tasks!: ITask[];
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private taskService: TaskServiceService,
-    private router: Router
-  ) {}
+  constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit() {
     this.taskService

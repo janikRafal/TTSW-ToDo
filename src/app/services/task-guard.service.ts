@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TaskServiceService } from './task-service.service';
+import { TaskService } from './task.service';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskGuard {
-  constructor(
-    private taskService: TaskServiceService,
-    private router: Router
-  ) {}
+  constructor(private taskService: TaskService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot

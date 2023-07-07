@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Task } from '../models/task';
+import { ITask } from '../models/task';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TaskServiceService {
-  private taskList = new BehaviorSubject<Task[]>([
+export class TaskService {
+  private taskList = new BehaviorSubject<ITask[]>([
     {
       id: '0c65b98b-ae4d-4b50-bcc3-249cad3ac9a4',
       title: 'Add modal window which confirms task deleting',
@@ -44,7 +44,19 @@ export class TaskServiceService {
 
   tasks$ = this.taskList.asObservable();
 
-  constructor() {}
+  constructor() {
+    this.taskList.next(
+      this.taskList.value.sort((a, b) =>
+        a.status === b.status ? 0 : a.status ? 1 : -1
+      )
+    );
+  }
+
+  private sortTasks(tasks: ITask[]): ITask[] {
+    return tasks.sort((a, b) =>
+      a.status === b.status ? 0 : a.status ? 1 : -1
+    );
+  }
 
   getAllTasks() {
     return this.tasks$;
@@ -56,8 +68,9 @@ export class TaskServiceService {
     );
   }
 
-  addNewTask(task: Task) {
-    this.taskList.next([...this.taskList.value, task]);
+  addNewTask(task: ITask) {
+    const newTasks = [...this.taskList.value, task];
+    this.taskList.next(this.sortTasks(newTasks));
   }
 
   editTaskById(id: string, data: { title: string; description: string }) {
@@ -69,14 +82,14 @@ export class TaskServiceService {
   }
 
   changeTaskStatusById(id: string) {
-    this.taskList.next(
-      this.taskList.value.map((task) =>
-        task.id === id ? { ...task, status: !task.status } : task
-      )
+    const updatedTasks = this.taskList.value.map((task) =>
+      task.id === id ? { ...task, status: !task.status } : task
     );
+    this.taskList.next(this.sortTasks(updatedTasks));
   }
 
   removeTaskById(id: string) {
-    this.taskList.next(this.taskList.value.filter((task) => task.id !== id));
+    const updatedTasks = this.taskList.value.filter((task) => task.id !== id);
+    this.taskList.next(this.sortTasks(updatedTasks));
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { TaskServiceService } from 'src/app/services/task-service.service';
+import { TaskService } from 'src/app/services/task.service';
 import { Router } from '@angular/router';
 import * as uuid from 'uuid';
 
@@ -15,10 +15,7 @@ export class TaskFormComponent {
     description: new FormControl(''),
   });
 
-  constructor(
-    private taskService: TaskServiceService,
-    private router: Router
-  ) {}
+  constructor(private taskService: TaskService, private router: Router) {}
 
   onSubmit(event: Event) {
     event.preventDefault();
