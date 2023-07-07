@@ -5,7 +5,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
 import { TaskFormComponent } from './components/task-form/task-form.component';
 import { TaskEditComponent } from './components/task-edit/task-edit.component';
-import { TaskGuard } from 'src/app/shared/services/task-guard.service';
+import { TaskGuard } from 'src/app/shared/task-guard/task-guard.service';
 
 const routes: Routes = [
   {

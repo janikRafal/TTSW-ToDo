@@ -2,11 +2,7 @@
   color: red;
 }
 
+input,
 textarea {
-  min-width: 680px;
-  min-height: 120px;
-}
-
-input {
-  min-width: 340px;
+  width: 100%;
 }
