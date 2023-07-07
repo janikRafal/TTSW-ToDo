@@ -10,22 +10,22 @@ import { map } from 'rxjs/operators';
 export class TaskGuard {
   constructor(private taskService: TaskService, private router: Router) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    const taskId = route.params['id'];
-    return this.taskService.getTaskById(taskId).pipe(
-      map((task) => {
-        if (task) {
-          return true;
-        } else {
-          return this.router.parseUrl('/not-found');
-        }
-      })
-    );
-  }
+  // canActivate(
+  //   route: ActivatedRouteSnapshot
+  // ):
+  //   | Observable<boolean | UrlTree>
+  //   | Promise<boolean | UrlTree>
+  //   | boolean
+  //   | UrlTree {
+  //   const taskId = route.params['id'];
+  //   return this.taskService.getTaskById(taskId).pipe(
+  //     map((task) => {
+  //       if (task) {
+  //         return true;
+  //       } else {
+  //         return this.router.parseUrl('/not-found');
+  //       }
+  //     })
+  //   );
+  // }
 }

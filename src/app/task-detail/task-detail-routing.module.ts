@@ -5,8 +5,8 @@ import { TaskGuard } from '../services/task-guard.service';
 import { TaskEditComponent } from './components/task-edit/task-edit.component';
 
 const routes: Routes = [
-  { path: ':id/edit', component: TaskEditComponent, canActivate: [TaskGuard] },
-  { path: ':id', component: TaskDetailComponent, canActivate: [TaskGuard] },
+  { path: ':id/edit', component: TaskEditComponent },
+  { path: ':id', component: TaskDetailComponent },
   { path: '', redirectTo: '/tasks', pathMatch: 'full' },
 ];
 

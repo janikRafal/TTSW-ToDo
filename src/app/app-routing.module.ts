@@ -5,25 +5,13 @@ import { NotFoundComponent } from './shared/not-found/not-found.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/tasks',
+    redirectTo: '/todo',
     pathMatch: 'full',
   },
   {
-    path: 'tasks',
+    path: 'todo',
     loadChildren: () =>
-      import('./task-list/task-list.module').then((mod) => mod.TaskListModule),
-  },
-  {
-    path: 'task',
-    loadChildren: () =>
-      import('./task-detail/task-detail.module').then(
-        (mod) => mod.TaskDetailModule
-      ),
-  },
-  {
-    path: 'add-task',
-    loadChildren: () =>
-      import('./task-form/task-form.module').then((mod) => mod.TaskFormModule),
+      import('./modules/task/task.module').then((mod) => mod.TaskModule),
   },
   { path: '**', component: NotFoundComponent },
 ];

@@ -1,0 +1,37 @@
+<p-card
+  [style]="{ width: 'auto', 'max-width': '900px', margin: '0 auto' }"
+  header="Edit task"
+>
+  <p-divider></p-divider>
+
+  <form (submit)="onSubmit($event)">
+    <app-input
+      inputType="text"
+      label="Title"
+      [control]="$any(taskForm.get('title'))"
+    >
+    </app-input>
+
+    <app-input
+      controlType="textarea"
+      label="Description"
+      [control]="$any(taskForm.get('description'))"
+    >
+    </app-input>
+
+    <div class="flex justify-content-end">
+      <p-button
+        label="Go back"
+        icon="pi pi-arrow-left"
+        styleClass="p-button-sm p-button-warning mr-2"
+        (click)="onGoBack()"
+      ></p-button>
+      <p-button
+        type="submit"
+        label="Submit"
+        icon="pi pi-check"
+        styleClass="p-button-sm "
+      ></p-button>
+    </div>
+  </form>
+</p-card>

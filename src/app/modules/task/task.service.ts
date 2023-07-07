@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ITask } from '../models/task';
+import { ITask } from '../../models/task';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -8,12 +8,6 @@ import { map } from 'rxjs/operators';
 })
 export class TaskService {
   private taskList = new BehaviorSubject<ITask[]>([
-    {
-      id: '0c64b98b-ae4d-4b50-bcc3-249cad3ac9a4',
-      title: 'Restructure project organization',
-      description: 'Implement the changes recommended by Marek.',
-      status: false,
-    },
     {
       id: '0c65b98b-ae4d-4b50-bcc3-249cad3ac9a4',
       title: 'Add modal window which confirms task deleting',
@@ -44,7 +38,7 @@ export class TaskService {
       title: 'Get feedback from Adrian and Marek',
       description:
         'If you finished, send your work to TTSW group and wait for feedback',
-      status: false,
+      status: true,
     },
   ]);
 
