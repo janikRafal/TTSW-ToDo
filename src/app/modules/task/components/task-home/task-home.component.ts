@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectorRef } from '@angular/core';
+import { TaskService } from '../../task.service';
 
 @Component({
   selector: 'app-task-home',
@@ -7,4 +8,16 @@ import { Component, Input } from '@angular/core';
 })
 export class TaskHomeComponent {
   @Input() pageHeader!: string;
+
+  constructor(
+    private taskService: TaskService,
+    private cdRef: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.taskService.pageHeader$.subscribe((header) => {
+      this.pageHeader = header;
+      this.cdRef.detectChanges();
+    });
+  }
 }

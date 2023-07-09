@@ -15,7 +15,10 @@ export class TaskEditComponent implements OnInit, OnDestroy {
   task!: ITask | undefined;
   private destroy$ = new Subject<void>();
   taskForm = new FormGroup({
-    title: new FormControl('', [Validators.required]),
+    title: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(100),
+    ]),
     description: new FormControl(''),
   });
 
@@ -41,12 +44,15 @@ export class TaskEditComponent implements OnInit, OnDestroy {
         this.task = task;
 
         if (this.task) {
+          const { title, description } = this.task; // destrukturyzacja
           this.taskForm.patchValue({
-            title: this.task.title,
-            description: this.task.description,
+            title,
+            description,
           });
         }
       });
+
+    this.taskService.setHeader('Task edit');
   }
 
   ngOnDestroy() {
@@ -68,13 +74,27 @@ export class TaskEditComponent implements OnInit, OnDestroy {
         title,
         description: description ?? '',
       });
-      this.router.navigate(['todo/task-list']);
+      this.router.navigate([`todo/task/${this.task.id}`]);
     }
   }
 
   onGoBack() {
+    const { title, description } = this.taskForm.value;
+    const confirmText =
+      'Are you sure you want to go back? Changes will be lost.';
+
+    if (
+      this.task &&
+      (this.task.title !== title || this.task.description !== description) &&
+      !confirm(confirmText)
+    ) {
+      return;
+    }
+
     if (this.task?.id) {
       this.router.navigate([`todo/task/${this.task.id}`]);
-    } else this.router.navigate(['todo/task-list']);
+    } else {
+      this.router.navigate(['todo/task-list']);
+    }
   }
 }

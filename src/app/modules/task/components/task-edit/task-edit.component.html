@@ -1,15 +1,17 @@
-<form (submit)="onSubmit($event)">
+<form>
   <app-input
+    *ngIf="taskForm.get('title')"
     inputType="text"
     label="Title"
-    [control]="$any(taskForm.get('title'))"
+    [control]="taskForm.get('title')! | formControl"
   >
   </app-input>
 
   <app-input
+    *ngIf="taskForm.get('description')"
     controlType="textarea"
     label="Description"
-    [control]="$any(taskForm.get('description'))"
+    [control]="taskForm.get('description')! | formControl"
   >
   </app-input>
 
@@ -22,6 +24,7 @@
     ></p-button>
     <p-button
       type="submit"
+      (click)="onSubmit($event)"
       label="Submit"
       icon="pi pi-check"
       styleClass="p-button-sm "

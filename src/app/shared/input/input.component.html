@@ -1,7 +1,7 @@
 <div *ngIf="controlType === 'input'">
   <span class="p-float-label mt-5">
     <input
-      class="w-full lg:w-6"
+      class="w-full xl:w-6"
       id="title"
       pInputText
       [type]="inputType"
@@ -10,13 +10,21 @@
     <label htmlFor="title">Title</label>
   </span>
 
-  <div class="w-full lg:w-6 pl-2" *ngIf="showErrors()">
+  <div class="w-full xl:w-6 pl-2" *ngIf="showErrors()">
     <small
-      class="text-red-500"
       *ngIf="control.errors?.['required']"
+      class="text-red-500"
       id="title-help"
       >Field is required</small
     >
+    <div class="flex flex-column" *ngIf="control.errors?.['maxlength']">
+      <small class="text-red-500" id="title-help"
+        >Title can be up to 100 characters long
+      </small>
+      <small class="text-red-500" id="title-help"
+        >(current length: {{ control.errors?.['maxlength'].actualLength }})
+      </small>
+    </div>
   </div>
 </div>
 

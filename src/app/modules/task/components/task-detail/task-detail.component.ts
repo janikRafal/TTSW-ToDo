@@ -31,6 +31,8 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe((task) => (this.task = task));
+
+    this.taskService.setHeader('Task details');
   }
 
   ngOnDestroy() {

@@ -47,8 +47,10 @@ export class TaskService {
       status: true,
     },
   ]);
+  private pageHeader = new BehaviorSubject<string>('To-Do App');
 
   tasks$ = this.taskList.asObservable();
+  pageHeader$ = this.pageHeader.asObservable();
 
   constructor() {
     this.taskList.next(this.sortTasks(this.taskList.value));
@@ -60,8 +62,8 @@ export class TaskService {
     );
   }
 
-  getAllTasks() {
-    return this.tasks$;
+  setHeader(header: string) {
+    this.pageHeader.next(header);
   }
 
   getTaskById(id: string) {

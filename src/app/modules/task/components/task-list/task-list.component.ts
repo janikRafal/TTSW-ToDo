@@ -17,10 +17,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit() {
-    this.taskService
-      .getAllTasks()
+    this.taskService.tasks$
       .pipe(takeUntil(this.destroy$))
       .subscribe((tasks) => (this.tasks = tasks));
+
+    this.taskService.setHeader('List of all tasks');
   }
 
   ngOnDestroy() {
@@ -37,9 +38,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onTaskDelete(taskId: string, taskTitle: string): void {
-    const text = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
+    const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
 
-    if (confirm(text) === true) {
+    if (confirm(confirmText) === true) {
       this.taskService.removeTaskById(taskId);
     } else {
       return;

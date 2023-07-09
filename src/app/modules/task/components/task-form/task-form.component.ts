@@ -11,11 +11,18 @@ import * as uuid from 'uuid';
 })
 export class TaskFormComponent {
   taskForm = new FormGroup({
-    title: new FormControl('', [Validators.required]),
+    title: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(100),
+    ]),
     description: new FormControl(''),
   });
 
   constructor(private taskService: TaskService, private router: Router) {}
+
+  ngOnInit() {
+    this.taskService.setHeader('Add a new task');
+  }
 
   onSubmit(event: Event) {
     event.preventDefault();
