@@ -16,7 +16,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PanelModule } from 'primeng/panel';
-import { FormControlPipe } from 'src/app/shared/form-control.pipe';
 
 @NgModule({
   declarations: [

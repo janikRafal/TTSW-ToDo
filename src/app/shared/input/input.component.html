@@ -10,7 +10,7 @@
     <label htmlFor="title">Title</label>
   </span>
 
-  <div class="w-full xl:w-6 pl-2" *ngIf="showErrors()">
+  <div class="w-full xl:w-6 pl-2 mt-2" *ngIf="showErrors()">
     <small
       *ngIf="control.errors?.['required']"
       class="text-red-500"

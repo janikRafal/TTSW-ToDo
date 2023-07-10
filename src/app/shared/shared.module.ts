@@ -6,6 +6,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { ButtonModule } from 'primeng/button';
 import { FormControlPipe } from './form-control.pipe';
 
 @NgModule({
@@ -15,6 +18,9 @@ import { FormControlPipe } from './form-control.pipe';
     ReactiveFormsModule,
     InputTextModule,
     InputTextareaModule,
+    CardModule,
+    DividerModule,
+    ButtonModule,
   ],
   exports: [NotFoundComponent, InputComponent, FormControlPipe],
 })
