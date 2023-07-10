@@ -70,11 +70,10 @@ export class TaskEditComponent implements OnInit, OnDestroy {
     }
 
     if (this.task) {
-      this.taskService.editTaskById(this.task.id, {
-        title,
-        description: description ?? '',
-      });
-      this.router.navigate([`todo/task/${this.task.id}`]);
+      this.taskService
+        .editTaskById({ ...this.task, title, description: description ?? '' })
+        .subscribe();
+      this.router.navigate([`todo/task/${this.task._id}`]);
     }
   }
 
@@ -91,8 +90,8 @@ export class TaskEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.task?.id) {
-      this.router.navigate([`todo/task/${this.task.id}`]);
+    if (this.task?._id) {
+      this.router.navigate([`todo/task/${this.task._id}`]);
     } else {
       this.router.navigate(['todo/task-list']);
     }

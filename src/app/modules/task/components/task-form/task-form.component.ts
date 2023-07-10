@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
-import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-task-form',
@@ -34,13 +33,12 @@ export class TaskFormComponent {
     }
 
     const newTask = {
-      id: uuid.v4(),
       title,
       description: description ?? '',
       status: false,
     };
 
-    this.taskService.addNewTask(newTask);
+    this.taskService.addNewTask(newTask).subscribe();
     this.router.navigate(['todo/task-list']);
   }
 

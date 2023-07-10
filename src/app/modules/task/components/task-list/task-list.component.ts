@@ -4,6 +4,8 @@ import { takeUntil } from 'rxjs';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
 import { ITask } from 'src/app/models/task';
+import { Dictionary } from 'src/app/models/dictionary';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-list',
@@ -12,14 +14,33 @@ import { ITask } from 'src/app/models/task';
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   tasks!: ITask[];
+  dictionary!: Dictionary[];
   private destroy$ = new Subject<void>();
 
   constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit() {
-    this.taskService.tasks$
+    this.taskService
+      .getTasks()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((tasks) => (this.tasks = tasks));
+      .subscribe((tasks: ITask[]) => {
+        this.dictionary = tasks.map((task) => {
+          return {
+            id: task._id,
+            label: task.title,
+          } as Dictionary;
+        });
+      });
+
+    this.taskService
+      .getTasks()
+      .pipe(
+        map((task) => {
+          console.log('to jest z mapa', task);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
 
     this.taskService.setHeader('List of all tasks');
   }
@@ -41,7 +62,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
 
     if (confirm(confirmText) === true) {
-      this.taskService.removeTaskById(taskId);
+      this.taskService.removeTaskById(taskId).subscribe();
     } else {
       return;
     }

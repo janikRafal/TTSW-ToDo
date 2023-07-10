@@ -40,8 +40,12 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onChangeStatus(taskId: string) {
-    this.taskService.changeTaskStatusById(taskId);
+  onChangeStatus() {
+    if (!this.task) return;
+
+    const taskStatusChanged = { ...this.task, status: !this.task.status };
+
+    this.taskService.editTaskById(taskStatusChanged).subscribe();
   }
 
   onGoBack() {
