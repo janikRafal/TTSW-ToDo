@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs';
 import { ITask } from '../../models/task';
 
 import { environment } from 'src/environments/environment';
@@ -29,9 +28,7 @@ export class TaskService {
   }
 
   getTasks() {
-    return this.http
-      .get<ITask[]>(this.apiUrl)
-      .pipe(tap((task) => console.log(task)));
+    return this.http.get<ITask[]>(this.apiUrl);
   }
 
   getTaskById(id: string) {

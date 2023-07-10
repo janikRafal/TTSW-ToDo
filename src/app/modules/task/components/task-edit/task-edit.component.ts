@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ITask } from 'src/app/models/task';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-edit',
@@ -44,7 +44,7 @@ export class TaskEditComponent implements OnInit, OnDestroy {
         this.task = task;
 
         if (this.task) {
-          const { title, description } = this.task; // destrukturyzacja
+          const { title, description } = this.task;
           this.taskForm.patchValue({
             title,
             description,

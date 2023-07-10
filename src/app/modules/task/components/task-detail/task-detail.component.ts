@@ -43,9 +43,11 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   onChangeStatus() {
     if (!this.task) return;
 
-    const taskStatusChanged = { ...this.task, status: !this.task.status };
+    const taskWithToggledStatus = { ...this.task, status: !this.task.status };
 
-    this.taskService.editTaskById(taskStatusChanged).subscribe();
+    this.taskService.editTaskById(taskWithToggledStatus).subscribe(() => {
+      this.task = taskWithToggledStatus;
+    });
   }
 
   onGoBack() {

@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
 import { ITask } from 'src/app/models/task';
 import { Dictionary } from 'src/app/models/dictionary';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-list',
@@ -14,6 +12,7 @@ import { map } from 'rxjs/operators';
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   tasks!: ITask[];
+
   dictionary!: Dictionary[];
   private destroy$ = new Subject<void>();
 
@@ -31,16 +30,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
           } as Dictionary;
         });
       });
-
-    this.taskService
-      .getTasks()
-      .pipe(
-        map((task) => {
-          console.log('to jest z mapa', task);
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
 
     this.taskService.setHeader('List of all tasks');
   }
