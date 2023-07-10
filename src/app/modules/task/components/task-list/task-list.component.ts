@@ -3,7 +3,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
 import { ITask } from 'src/app/models/task';
-import { Dictionary } from 'src/app/models/dictionary';
+import { IDictionary } from 'src/app/models/dictionary';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-list',
@@ -11,25 +12,21 @@ import { Dictionary } from 'src/app/models/dictionary';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit, OnDestroy {
-  tasks!: ITask[];
-
-  dictionary!: Dictionary[];
+  dictionaryList!: IDictionary[];
   private destroy$ = new Subject<void>();
 
   constructor(private taskService: TaskService, private router: Router) {}
 
   ngOnInit() {
     this.taskService
-      .getTasks()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((tasks: ITask[]) => {
-        this.dictionary = tasks.map((task) => {
-          return {
-            id: task._id,
-            label: task.title,
-          } as Dictionary;
-        });
-      });
+      .getDictionaries()
+      .pipe(
+        takeUntil(this.destroy$),
+        tap((dictionaryList) => {
+          this.dictionaryList = dictionaryList;
+        })
+      )
+      .subscribe();
 
     this.taskService.setHeader('List of all tasks');
   }

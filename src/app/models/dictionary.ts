@@ -1,4 +1,4 @@
-export interface Dictionary {
+export interface IDictionary {
   id: string;
   label: string;
 }

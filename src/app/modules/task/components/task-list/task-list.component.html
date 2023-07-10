@@ -7,8 +7,8 @@
   ></p-button>
 </div>
 <p-divider></p-divider>
-<p-dataView #dv [value]="dictionary">
-  <ng-template let-dictionaryItem pTemplate="listItem">
+<p-dataView #dv [value]="dictionaryList">
+  <ng-template let-dictionary pTemplate="listItem">
     <div class="col-12">
       <div class="flex flex-column md:flex-row md:align-items-center p-3 gap-4">
         <div
@@ -25,7 +25,7 @@
               class="flex flex-column align-items-center sm:align-items-start gap-3"
             >
               <div class="text-xl text-900">
-                {{ dictionaryItem.label }} - {{ dictionaryItem.id }}
+                {{ dictionary.label }} - {{ dictionary.id }}
               </div>
             </div>
           </div>
@@ -34,14 +34,14 @@
           >
             <p-button
               icon="pi pi-trash"
-              (click)="onTaskDelete(dictionaryItem.id, dictionaryItem.label)"
+              (click)="onTaskDelete(dictionary.id, dictionary.label)"
               styleClass="p-button-rounded p-button-danger p-button-text p-button-raised"
               pTooltip="Delete task"
               tooltipPosition="bottom"
             ></p-button>
             <p-button
               icon="pi pi-search"
-              (click)="onTaskDetail(dictionaryItem.id)"
+              (click)="onTaskDetail(dictionary.id)"
               styleClass="p-button-rounded p-button-text p-button-raised"
               pTooltip="Task details"
               tooltipPosition="bottom"
