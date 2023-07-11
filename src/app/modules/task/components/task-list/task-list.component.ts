@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
+import { tap, switchMap } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
-import { ITask } from 'src/app/models/task';
 import { IDictionary } from 'src/app/models/dictionary';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-list',
@@ -21,10 +20,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskService
       .getDictionaries()
       .pipe(
-        takeUntil(this.destroy$),
         tap((dictionaryList) => {
           this.dictionaryList = dictionaryList;
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
@@ -34,6 +33,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  getTaskStatus(id: string) {
+    return this.taskService.getTaskStatusById(id);
   }
 
   onTaskDetail(taskId: string) {
@@ -48,7 +51,17 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
 
     if (confirm(confirmText) === true) {
-      this.taskService.removeTaskById(taskId).subscribe();
+      this.taskService
+        .removeTaskById(taskId)
+        .pipe(
+          switchMap(() => this.taskService.getDictionaries()),
+          tap((dictionaries) => {
+            console.log(dictionaries);
+            this.dictionaryList = dictionaries;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe();
     } else {
       return;
     }

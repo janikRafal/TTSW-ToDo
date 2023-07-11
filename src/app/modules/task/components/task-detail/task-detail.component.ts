@@ -23,11 +23,11 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.paramMap
       .pipe(
-        takeUntil(this.destroy$),
         switchMap((params) => {
           const taskId = params.get('id')!;
           return this.taskService.getTaskById(taskId);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe((task) => (this.task = task));
 

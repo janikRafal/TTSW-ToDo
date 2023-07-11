@@ -14,7 +14,6 @@ export class TaskService {
   apiUrl = `https://crudcrud.com/api/${environment.api_key}/todo`;
 
   private taskList = new BehaviorSubject<ITask[]>([]);
-  taskList$ = this.taskList.asObservable();
 
   private pageHeader = new BehaviorSubject<string>('To-Do App');
   pageHeader$ = this.pageHeader.asObservable();
@@ -25,7 +24,7 @@ export class TaskService {
     if (this.taskList.getValue().length === 0) {
       return this.http
         .get<ITask[]>(this.apiUrl)
-        .pipe(tap((tasks) => this.taskList.next(tasks)));
+        .pipe(tap((tasks) => this.taskList.next(this.sortTasks(tasks))));
     }
 
     return this.taskList.asObservable();
@@ -63,7 +62,27 @@ export class TaskService {
   }
 
   addNewTask(task: ITask) {
-    return this.http.post<ITask>(this.apiUrl, task);
+    return this.http.post<ITask>(this.apiUrl, task).pipe(
+      tap((taskFromResponse) => {
+        const tasks = this.taskList.getValue();
+        tasks.push(taskFromResponse);
+        const sortedTasks = this.sortTasks(tasks);
+
+        this.taskList.next(sortedTasks);
+      })
+    );
+  }
+
+  removeTaskById(id: string) {
+    return this.http.delete<ITask>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
+        const tasks = this.taskList.getValue();
+        const filteredTasks = tasks.filter((task) => task._id !== id);
+        const sortedTasks = this.sortTasks(filteredTasks);
+
+        this.taskList.next(sortedTasks);
+      })
+    );
   }
 
   editTaskById(task: ITask) {
@@ -82,14 +101,12 @@ export class TaskService {
 
           if (taskIndex > -1) {
             tasks[taskIndex] = task;
-            this.taskList.next(tasks);
+            const sortedTasks = this.sortTasks(tasks);
+
+            this.taskList.next(sortedTasks);
           }
         })
       );
-  }
-
-  removeTaskById(id: string) {
-    return this.http.delete<ITask>(`${this.apiUrl}/${id}`);
   }
 
   private sortTasks(tasks: ITask[]): ITask[] {
@@ -100,5 +117,14 @@ export class TaskService {
 
   setHeader(header: string) {
     this.pageHeader.next(header);
+  }
+
+  getTaskStatusById(id: string) {
+    return this.taskList.pipe(
+      map((tasks) => {
+        const task = tasks.find((task) => task._id === id);
+        return task ? task.status : false;
+      })
+    );
   }
 }

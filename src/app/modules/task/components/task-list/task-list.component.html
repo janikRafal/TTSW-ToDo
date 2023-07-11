@@ -19,7 +19,12 @@
           >
             <i
               style="font-size: 2rem"
-              class="pi pi-check-circle text-green-500"
+              class="pi"
+              [ngClass]="
+                (getTaskStatus(dictionary.id) | async)
+                  ? 'pi-check-circle text-green-500'
+                  : 'pi-times-circle text-yellow-500'
+              "
             ></i>
             <div
               class="flex flex-column align-items-center sm:align-items-start gap-3"
