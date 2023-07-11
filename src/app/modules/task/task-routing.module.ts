@@ -17,6 +17,11 @@ const routes: Routes = [
         path: 'task',
         children: [
           {
+            path: '',
+            redirectTo: 'not-found',
+            pathMatch: 'full',
+          },
+          {
             path: ':id',
             component: TaskDetailComponent,
             canActivate: [TaskGuard],

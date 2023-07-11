@@ -1,49 +1,55 @@
-<p-panel class="w-full" [header]="task?.title">
-  <p>
-    {{ task?.description }}
-  </p>
+<div *ngIf="task$ | async as task; else loading" class="w-full">
+  <p-panel [header]="task.title">
+    <p>
+      {{ task.description }}
+    </p>
 
-  <ng-template pTemplate="icons">
-    <span
-      class="pi"
-      [ngClass]="{
-        'pi-check-circle text-green-500': task?.status,
-        'pi-times-circle text-yellow-500': !task?.status
-      }"
-      [pTooltip]="task?.status ? 'Completed' : 'Incomplete'"
-      tooltipPosition="bottom"
-      [showDelay]="500"
-    ></span>
-  </ng-template>
-</p-panel>
+    <ng-template pTemplate="icons">
+      <span
+        class="pi"
+        [ngClass]="{
+          'pi-check-circle text-green-500': task.status,
+          'pi-times-circle text-yellow-500': !task.status
+        }"
+        [pTooltip]="task.status ? 'Completed' : 'Incomplete'"
+        tooltipPosition="bottom"
+        [showDelay]="500"
+      ></span>
+    </ng-template>
+  </p-panel>
 
-<div
-  class="flex flex-column sm:flex-row justify-content-between flex-wrap mt-5"
->
-  <div class="flex-order-1 sm:flex-order-0 mt-8 sm:mt-0">
-    <p-button
-      label="Go back"
-      icon="pi pi-arrow-left"
-      styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
-      (click)="onGoBack()"
-    ></p-button>
-  </div>
-  <div class="flex justify-content-between sm:flex-order-1">
-    <p-button
-      [label]="task?.status ? 'Mark as incomplete' : 'Mark as complete'"
-      [icon]="task?.status ? 'pi pi-times' : 'pi pi-check'"
-      [styleClass]="
-        task?.status
-          ? 'mr-3 p-button-raised p-button-text p-button-warning p-button-sm'
-          : 'mr-3 p-button-raised p-button-text p-button-success p-button-sm'
-      "
-      (click)="onChangeStatus()"
-    ></p-button>
-    <p-button
-      label="Edit"
-      icon="pi pi-pencil"
-      [routerLink]="['edit']"
-      styleClass="p-button-raised p-button-text p-button-info p-button-sm"
-    ></p-button>
+  <div
+    class="flex flex-column sm:flex-row justify-content-between flex-wrap mt-5"
+  >
+    <div class="flex-order-1 sm:flex-order-0 mt-8 sm:mt-0">
+      <p-button
+        label="Go back"
+        icon="pi pi-arrow-left"
+        styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
+        (click)="onGoBack()"
+      ></p-button>
+    </div>
+    <div class="flex justify-content-between sm:flex-order-1">
+      <p-button
+        [label]="task?.status ? 'Mark as incomplete' : 'Mark as complete'"
+        [icon]="task?.status ? 'pi pi-times' : 'pi pi-check'"
+        [styleClass]="
+          task?.status
+            ? 'mr-3 p-button-raised p-button-text p-button-warning p-button-sm'
+            : 'mr-3 p-button-raised p-button-text p-button-success p-button-sm'
+        "
+        (click)="onChangeStatus()"
+      ></p-button>
+      <p-button
+        label="Edit"
+        icon="pi pi-pencil"
+        [routerLink]="['edit']"
+        styleClass="p-button-raised p-button-text p-button-info p-button-sm"
+      ></p-button>
+    </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <p-skeleton width="100%" height="155px"></p-skeleton>
+</ng-template>

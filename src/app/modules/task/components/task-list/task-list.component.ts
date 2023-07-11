@@ -1,38 +1,43 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { tap, switchMap } from 'rxjs/operators';
+import { Subject, takeUntil, Observable } from 'rxjs';
+import { map, tap, switchMap } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
 import { IDictionary } from 'src/app/models/dictionary';
+import { AppState } from 'src/app/reducers';
+import { Store, select } from '@ngrx/store';
+import { getTasks } from '../../store/task.actions';
+import { selectTaskList } from '../../store/task.selectors';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
 })
-export class TaskListComponent implements OnInit, OnDestroy {
-  dictionaryList!: IDictionary[];
-  private destroy$ = new Subject<void>();
+export class TaskListComponent implements OnInit {
+  dictionaryList$!: Observable<IDictionary[]>;
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(
+    private taskService: TaskService,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 
   ngOnInit() {
-    this.taskService
-      .getDictionaries()
-      .pipe(
-        tap((dictionaryList) => {
-          this.dictionaryList = dictionaryList;
-        }),
-        takeUntil(this.destroy$)
+    this.store.dispatch(getTasks());
+
+    this.dictionaryList$ = this.store.pipe(
+      select(selectTaskList),
+      map(
+        (tasks) =>
+          tasks?.map((task) => ({
+            id: task._id || '',
+            label: task.title || '',
+          })) || []
       )
-      .subscribe();
+    );
 
     this.taskService.setHeader('List of all tasks');
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   getTaskStatus(id: string) {
@@ -48,22 +53,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onTaskDelete(taskId: string, taskTitle: string): void {
-    const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
-
-    if (confirm(confirmText) === true) {
-      this.taskService
-        .removeTaskById(taskId)
-        .pipe(
-          switchMap(() => this.taskService.getDictionaries()),
-          tap((dictionaries) => {
-            console.log(dictionaries);
-            this.dictionaryList = dictionaries;
-          }),
-          takeUntil(this.destroy$)
-        )
-        .subscribe();
-    } else {
-      return;
-    }
+    // const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
+    // if (confirm(confirmText) === true) {
+    //   this.taskService
+    //     .removeTaskById(taskId)
+    //     .pipe(
+    //       switchMap(() => this.taskService.getDictionaries()),
+    //       tap((dictionaries) => {
+    //         this.dictionaryList = dictionaries;
+    //       }),
+    //       takeUntil(this.destroy$)
+    //     )
+    //     .subscribe();
+    // } else {
+    //   return;
+    // }
   }
 }

@@ -16,6 +16,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PanelModule } from 'primeng/panel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import * as fromTask from './store/reducers';
+import { TaskEffects } from './store/task.effects';
 
 @NgModule({
   declarations: [
@@ -36,6 +42,10 @@ import { PanelModule } from 'primeng/panel';
     TooltipModule,
     PanelModule,
     SharedModule,
+    ProgressSpinnerModule,
+    SkeletonModule,
+    StoreModule.forFeature(fromTask.taskFeatureKey, fromTask.taskReducer),
+    EffectsModule.forFeature([TaskEffects]),
   ],
 })
 export class TaskModule {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ITask } from '../../models/task';
 import { IDictionary } from 'src/app/models/dictionary';
@@ -19,6 +19,20 @@ export class TaskService {
   pageHeader$ = this.pageHeader.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  fetchTasks(): Observable<ITask[]> {
+    return this.http.get<ITask[]>(this.apiUrl);
+  }
+
+  fetchTaskById(taskId: string): Observable<ITask> {
+    return this.http.get<ITask>(`${this.apiUrl}/${taskId}`);
+  }
+
+  addNewTaskStore(task: ITask): Observable<ITask> {
+    return this.http.post<ITask>(this.apiUrl, task);
+  }
+
+  //-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//
 
   getTasks() {
     if (this.taskList.getValue().length === 0) {
@@ -65,7 +79,7 @@ export class TaskService {
     return this.http.post<ITask>(this.apiUrl, task).pipe(
       tap((taskFromResponse) => {
         const tasks = this.taskList.getValue();
-        tasks.push(taskFromResponse);
+        tasks.unshift(taskFromResponse);
         const sortedTasks = this.sortTasks(tasks);
 
         this.taskList.next(sortedTasks);
