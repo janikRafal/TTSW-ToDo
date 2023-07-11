@@ -56,7 +56,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
         .pipe(
           switchMap(() => this.taskService.getDictionaries()),
           tap((dictionaries) => {
-            console.log(dictionaries);
             this.dictionaryList = dictionaries;
           }),
           takeUntil(this.destroy$)

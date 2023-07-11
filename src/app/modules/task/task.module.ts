@@ -16,6 +16,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PanelModule } from 'primeng/panel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { PanelModule } from 'primeng/panel';
     TooltipModule,
     PanelModule,
     SharedModule,
+    ProgressSpinnerModule,
+    SkeletonModule,
   ],
 })
 export class TaskModule {}

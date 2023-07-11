@@ -1,21 +1,25 @@
-<p-panel class="w-full" [header]="task?.title">
-  <p>
-    {{ task?.description }}
-  </p>
+<p-skeleton *ngIf="!task" width="100%" height="155px"></p-skeleton>
 
-  <ng-template pTemplate="icons">
-    <span
-      class="pi"
-      [ngClass]="{
-        'pi-check-circle text-green-500': task?.status,
-        'pi-times-circle text-yellow-500': !task?.status
-      }"
-      [pTooltip]="task?.status ? 'Completed' : 'Incomplete'"
-      tooltipPosition="bottom"
-      [showDelay]="500"
-    ></span>
-  </ng-template>
-</p-panel>
+<div *ngIf="task" class="w-full">
+  <p-panel [header]="task.title">
+    <p>
+      {{ task.description }}
+    </p>
+
+    <ng-template pTemplate="icons">
+      <span
+        class="pi"
+        [ngClass]="{
+          'pi-check-circle text-green-500': task.status,
+          'pi-times-circle text-yellow-500': !task.status
+        }"
+        [pTooltip]="task.status ? 'Completed' : 'Incomplete'"
+        tooltipPosition="bottom"
+        [showDelay]="500"
+      ></span>
+    </ng-template>
+  </p-panel>
+</div>
 
 <div
   class="flex flex-column sm:flex-row justify-content-between flex-wrap mt-5"

@@ -65,7 +65,7 @@ export class TaskService {
     return this.http.post<ITask>(this.apiUrl, task).pipe(
       tap((taskFromResponse) => {
         const tasks = this.taskList.getValue();
-        tasks.push(taskFromResponse);
+        tasks.unshift(taskFromResponse);
         const sortedTasks = this.sortTasks(tasks);
 
         this.taskList.next(sortedTasks);
