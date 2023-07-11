@@ -21,16 +21,6 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  private sortTasks(tasks: ITask[]): ITask[] {
-    return tasks.sort((a, b) =>
-      a.status === b.status ? 0 : a.status ? 1 : -1
-    );
-  }
-
-  setHeader(header: string) {
-    this.pageHeader.next(header);
-  }
-
   getTasks() {
     if (this.taskList.getValue().length === 0) {
       return this.http
@@ -61,7 +51,15 @@ export class TaskService {
   }
 
   getTaskById(id: string) {
-    return this.http.get<ITask>(`${this.apiUrl}/${id}`);
+    if (this.taskList.getValue().length === 0) {
+      return this.http.get<ITask>(`${this.apiUrl}/${id}`);
+    }
+
+    return this.taskList.pipe(
+      map((tasks) => {
+        return tasks.find((task) => task._id === id);
+      })
+    );
   }
 
   addNewTask(task: ITask) {
@@ -71,14 +69,36 @@ export class TaskService {
   editTaskById(task: ITask) {
     const { _id, title, description, status } = task;
 
-    return this.http.put<ITask>(`${this.apiUrl}/${_id}`, {
-      title,
-      description,
-      status,
-    });
+    return this.http
+      .put<ITask>(`${this.apiUrl}/${_id}`, {
+        title,
+        description,
+        status,
+      })
+      .pipe(
+        tap(() => {
+          const tasks = this.taskList.getValue();
+          const taskIndex = tasks.findIndex((task) => task._id === _id);
+
+          if (taskIndex > -1) {
+            tasks[taskIndex] = task;
+            this.taskList.next(tasks);
+          }
+        })
+      );
   }
 
   removeTaskById(id: string) {
     return this.http.delete<ITask>(`${this.apiUrl}/${id}`);
+  }
+
+  private sortTasks(tasks: ITask[]): ITask[] {
+    return tasks.sort((a, b) =>
+      a.status === b.status ? 0 : a.status ? 1 : -1
+    );
+  }
+
+  setHeader(header: string) {
+    this.pageHeader.next(header);
   }
 }

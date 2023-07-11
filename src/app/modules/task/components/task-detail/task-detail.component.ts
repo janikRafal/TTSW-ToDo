@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ITask } from 'src/app/models/task';
-import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-detail',
@@ -11,7 +11,6 @@ import { switchMap, takeUntil } from 'rxjs/operators';
   styleUrls: ['./task-detail.component.scss'],
 })
 export class TaskDetailComponent implements OnInit, OnDestroy {
-  taskId!: string;
   task!: ITask | undefined;
   private destroy$ = new Subject<void>();
 
@@ -24,11 +23,11 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.paramMap
       .pipe(
+        takeUntil(this.destroy$),
         switchMap((params) => {
           const taskId = params.get('id')!;
           return this.taskService.getTaskById(taskId);
-        }),
-        takeUntil(this.destroy$)
+        })
       )
       .subscribe((task) => (this.task = task));
 
