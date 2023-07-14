@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
-import { TaskService } from '../task.service';
 import * as TaskActions from './task.actions';
 import { ITask } from 'src/app/models/task';
 import { environment } from 'src/environments/environment';
@@ -12,16 +11,13 @@ import { HttpClient } from '@angular/common/http';
 export class TaskEffects {
   apiUrl = `https://crudcrud.com/api/${environment.api_key}/todo`;
 
-  loadTasks$ = createEffect(() =>
+  fetchTasks$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(TaskActions.loadTasks),
-      tap(() => console.log('loadTasks action dispatched')), // Dodaj console.log tutaj
+      ofType(TaskActions.fetchTasks),
       mergeMap(() =>
         this.http.get<ITask[]>(this.apiUrl).pipe(
-          tap((tasks) => console.log('Received tasks from API:', tasks)), // Dodaj console.log tutaj
-          map((tasks) => TaskActions.loadTasksSuccess({ tasks })),
-          catchError((error) => {
-            console.error('Error occurred when fetching tasks:', error); // Dodaj console.error tutaj
+          map((tasks) => TaskActions.fetchTasksSuccess({ tasks })),
+          catchError(() => {
             return EMPTY;
           })
         )
@@ -29,5 +25,18 @@ export class TaskEffects {
     )
   );
 
+  fetchTaskById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TaskActions.fetchTaskById),
+      mergeMap((action) =>
+        this.http.get<ITask>(`${this.apiUrl}/${action.id}`).pipe(
+          map((task) => TaskActions.fetchTaskByIdSuccess({ task })),
+          catchError(() => {
+            return EMPTY;
+          })
+        )
+      )
+    )
+  );
   constructor(private actions$: Actions, private http: HttpClient) {}
 }

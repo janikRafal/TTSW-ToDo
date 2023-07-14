@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map, pluck, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ITask } from '../../models/task';
 import { IDictionary } from 'src/app/models/dictionary';
-import { loadTasks } from './store/task.actions';
+import { fetchTasks } from './store/task.actions';
 
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -27,24 +27,28 @@ export class TaskService {
   ) {}
 
   getTasks(): Observable<ITask[]> {
+    this.store.dispatch(fetchTasks());
+
     return this.store.select('tasks');
   }
 
   getDictionaries(): Observable<IDictionary[]> {
-    this.store.dispatch(loadTasks());
+    this.store.dispatch(fetchTasks());
 
-    return this.store.select('tasks').pipe(
-      tap((tasks) => console.log('to ze stora', tasks)),
-      map((tasks: ITask[]) =>
-        tasks.map(
-          (task) =>
-            ({
-              id: task._id,
-              label: task.title,
-            } as IDictionary)
-        )
-      )
-    );
+    return this.store
+      .select((state) => state.tasks)
+      .pipe(
+        map((tasks: ITask[]) =>
+          tasks.map(
+            (task: ITask) =>
+              ({
+                id: task._id,
+                label: task.title,
+              } as IDictionary)
+          )
+        ),
+        tap((dictionaries) => console.log('Dictionaries:', dictionaries))
+      );
   }
 
   getTaskById(id: string) {
