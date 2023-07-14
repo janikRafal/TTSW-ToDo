@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map, pluck, tap } from 'rxjs/operators';
 import { ITask } from '../../models/task';
 import { IDictionary } from 'src/app/models/dictionary';
+import { loadTasks } from './store/task.actions';
 
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -18,26 +21,21 @@ export class TaskService {
   private pageHeader = new BehaviorSubject<string>('To-Do App');
   pageHeader$ = this.pageHeader.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private store: Store<{ tasks: ITask[] }>
+  ) {}
 
-  getTasks() {
-    if (this.taskList.getValue().length === 0) {
-      return this.http
-        .get<ITask[]>(this.apiUrl)
-        .pipe(tap((tasks) => this.taskList.next(this.sortTasks(tasks))));
-    }
-
-    return this.taskList.asObservable();
+  getTasks(): Observable<ITask[]> {
+    return this.store.select('tasks');
   }
 
-  getDictionaries() {
-    const tasks$ =
-      this.taskList.getValue().length === 0
-        ? this.getTasks()
-        : this.taskList.asObservable();
+  getDictionaries(): Observable<IDictionary[]> {
+    this.store.dispatch(loadTasks());
 
-    return tasks$.pipe(
-      map((tasks) =>
+    return this.store.select('tasks').pipe(
+      tap((tasks) => console.log('to ze stora', tasks)),
+      map((tasks: ITask[]) =>
         tasks.map(
           (task) =>
             ({
