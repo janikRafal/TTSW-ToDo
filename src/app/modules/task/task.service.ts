@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ITask } from '../../models/task';
 import { IDictionary } from 'src/app/models/dictionary';
-import { fetchTasks } from './store/task.actions';
 
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -19,10 +18,7 @@ export class TaskService {
   private pageHeader = new BehaviorSubject<string>('To-Do App');
   pageHeader$ = this.pageHeader.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private store: Store<{ tasks: ITask[] }>
-  ) {}
+  constructor(private http: HttpClient) {}
 
   fetchTasks(): Observable<ITask[]> {
     return this.http.get<ITask[]>(this.apiUrl);
@@ -45,26 +41,26 @@ export class TaskService {
         .pipe(tap((tasks) => this.taskList.next(this.sortTasks(tasks))));
     }
 
-    return this.store.select('tasks');
+    return this.taskList.asObservable();
   }
 
-  getDictionaries(): Observable<IDictionary[]> {
-    this.store.dispatch(fetchTasks());
+  getDictionaries() {
+    const tasks$ =
+      this.taskList.getValue().length === 0
+        ? this.getTasks()
+        : this.taskList.asObservable();
 
-    return this.store
-      .select((state) => state.tasks)
-      .pipe(
-        map((tasks: ITask[]) =>
-          tasks.map(
-            (task: ITask) =>
-              ({
-                id: task._id,
-                label: task.title,
-              } as IDictionary)
-          )
-        ),
-        tap((dictionaries) => console.log('Dictionaries:', dictionaries))
-      );
+    return tasks$.pipe(
+      map((tasks) =>
+        tasks.map(
+          (task) =>
+            ({
+              id: task._id,
+              label: task.title,
+            } as IDictionary)
+        )
+      )
+    );
   }
 
   getTaskById(id: string) {
