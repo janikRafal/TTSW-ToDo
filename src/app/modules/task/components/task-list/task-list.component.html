@@ -9,11 +9,8 @@
 <p-divider></p-divider>
 <div
   class="flex align-items-center justify-content-center"
-  *ngIf="!dictionaryList"
+  *ngIf="dictionaryList$ | async as dictionaryList; else loading"
 >
-  <p-progressSpinner></p-progressSpinner>
-</div>
-<div *ngIf="dictionaryList">
   <p-dataView #dv [value]="dictionaryList">
     <ng-template let-dictionary pTemplate="listItem">
       <div class="col-12">
@@ -67,3 +64,9 @@
     </ng-template>
   </p-dataView>
 </div>
+
+<ng-template #loading>
+  <div class="flex align-items-center justify-content-center">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+</ng-template>

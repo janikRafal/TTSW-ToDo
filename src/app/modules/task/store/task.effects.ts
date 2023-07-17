@@ -1,42 +1,54 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, tap } from 'rxjs/operators';
-import * as TaskActions from './task.actions';
-import { ITask } from 'src/app/models/task';
-import { environment } from 'src/environments/environment';
-import { EMPTY } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { catchError, map, tap, mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+import * as taskActions from './task.actions';
+import { TaskService } from '../task.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class TaskEffects {
-  apiUrl = `https://crudcrud.com/api/${environment.api_key}/todo`;
-
-  fetchTasks$ = createEffect(() =>
+  getTasks$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(TaskActions.fetchTasks),
+      ofType(taskActions.getTasks),
       mergeMap(() =>
-        this.http.get<ITask[]>(this.apiUrl).pipe(
-          map((tasks) => TaskActions.fetchTasksSuccess({ tasks })),
-          catchError(() => {
-            return EMPTY;
-          })
+        this.taskService.fetchTasks().pipe(
+          map((tasks) => taskActions.getTasksSuccess({ tasks })),
+          catchError((error) => of(taskActions.getTasksFailure({ error })))
         )
       )
     )
   );
 
-  fetchTaskById$ = createEffect(() =>
+  getTaskById$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(TaskActions.fetchTaskById),
+      ofType(taskActions.getTaskById),
       mergeMap((action) =>
-        this.http.get<ITask>(`${this.apiUrl}/${action.id}`).pipe(
-          map((task) => TaskActions.fetchTaskByIdSuccess({ task })),
-          catchError(() => {
-            return EMPTY;
-          })
+        this.taskService.fetchTaskById(action.taskId).pipe(
+          map((task) => taskActions.getTaskByIdSuccess({ task })),
+          catchError((error) => of(taskActions.getTaskByIdFailure({ error })))
         )
       )
     )
   );
-  constructor(private actions$: Actions, private http: HttpClient) {}
+
+  addNewTask$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(taskActions.addNewTask),
+      mergeMap((action) =>
+        this.taskService.addNewTaskStore(action.task).pipe(
+          map(() => taskActions.addNewTaskSuccess()),
+          catchError((error) => of(taskActions.addNewTaskFailure({ error }))),
+          tap(() => this.router.navigateByUrl('/todo/task-list'))
+        )
+      )
+    )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private taskService: TaskService,
+    private router: Router
+  ) {}
 }
