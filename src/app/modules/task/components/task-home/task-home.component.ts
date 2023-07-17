@@ -8,8 +8,8 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./task-home.component.scss'],
 })
 export class TaskHomeComponent {
-  @Input() pageHeader!: string;
-
+  @Input()
+  protected pageHeader!: string;
   private destroy$ = new Subject<void>();
 
   constructor(

@@ -15,7 +15,7 @@ import { selectTaskList, selectTaskStatus } from '../../store/task.selectors';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
-  dictionaryList$!: Observable<IDictionary[]>;
+  protected dictionaryList$!: Observable<IDictionary[]>;
 
   constructor(
     private taskService: TaskService,

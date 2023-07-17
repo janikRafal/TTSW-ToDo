@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { ITask } from '../../models/task';
-import { IDictionary } from 'src/app/models/dictionary';
 
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';

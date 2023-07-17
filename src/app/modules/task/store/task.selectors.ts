@@ -1,7 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TaskState } from './reducers';
-import { AppState } from 'src/app/reducers';
-import { ITask } from 'src/app/models/task';
 
 export const selectTaskState = createFeatureSelector<TaskState>('tasks');
 

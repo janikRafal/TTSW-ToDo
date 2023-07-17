@@ -22,7 +22,7 @@ import {
   styleUrls: ['./task-detail.component.scss'],
 })
 export class TaskDetailComponent implements OnInit {
-  task$!: Observable<ITask>;
+  protected task$!: Observable<ITask>;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -65,9 +65,6 @@ export class TaskDetailComponent implements OnInit {
         const taskWithToggledStatus = { ...task, status: !task.status };
 
         this.store.dispatch(editTaskById({ task: taskWithToggledStatus }));
-        // this.store.dispatch(
-        //   getTaskByIdSuccess({ task: taskWithToggledStatus })
-        // );
       }
     });
   }

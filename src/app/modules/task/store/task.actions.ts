@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import { ITask } from 'src/app/models/task';
-import { TaskState } from './reducers';
 
 // ----- Get All Tasks ----- //
 
@@ -49,7 +48,7 @@ export const addNewTaskFailure = createAction(
   props<{ error: any }>()
 );
 
-// ----- Add New Task ----- //
+// ----- Edit Task By Id----- //
 
 export const editTaskById = createAction(
   '[Task Detail / Task Edit] Edit Task By ID',

@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./task-form.component.scss'],
 })
 export class TaskFormComponent {
-  taskForm = new FormGroup({
+  protected taskForm = new FormGroup({
     title: new FormControl('', [
       Validators.required,
       Validators.maxLength(100),

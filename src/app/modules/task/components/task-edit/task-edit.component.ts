@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ITask } from 'src/app/models/task';
@@ -11,7 +11,7 @@ import {
   selectTaskDetail,
   selectTaskFromStore,
 } from '../../store/task.selectors';
-import { getTaskById } from '../../store/task.actions';
+import { editTaskById, getTaskById } from '../../store/task.actions';
 
 @Component({
   selector: 'app-task-edit',
@@ -19,7 +19,7 @@ import { getTaskById } from '../../store/task.actions';
   styleUrls: ['./task-edit.component.scss'],
 })
 export class TaskEditComponent implements OnInit, OnDestroy {
-  task$!: Observable<ITask>;
+  private task!: ITask;
   private destroy$ = new Subject<void>();
 
   taskForm = new FormGroup({
@@ -65,6 +65,7 @@ export class TaskEditComponent implements OnInit, OnDestroy {
         if (task) {
           this.taskForm.get('title')?.setValue(task.title);
           this.taskForm.get('description')?.setValue(task.description);
+          this.task = task;
         }
       });
 
@@ -85,24 +86,27 @@ export class TaskEditComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const updatedTask = { ...this.task, title, description: description || '' };
+
+    this.store.dispatch(editTaskById({ task: updatedTask }));
     // this.router.navigate([`todo/task/${this.task._id}`]);
   }
 
   onGoBack() {
-    // const { title, description } = this.taskForm.value;
-    // const confirmText =
-    //   'Are you sure you want to go back? Changes will be lost.';
-    // if (
-    //   this.task &&
-    //   (this.task.title !== title || this.task.description !== description) &&
-    //   !confirm(confirmText)
-    // ) {
-    //   return;
-    // }
-    // if (this.task?._id) {
-    //   this.router.navigate([`todo/task/${this.task._id}`]);
-    // } else {
-    //   this.router.navigate(['todo/task-list']);
-    // }
+    const { title, description } = this.taskForm.value;
+    const confirmText =
+      'Are you sure you want to go back? Changes will be lost.';
+    if (
+      this.task &&
+      (this.task.title !== title || this.task.description !== description) &&
+      !confirm(confirmText)
+    ) {
+      return;
+    }
+    if (this.task?._id) {
+      this.router.navigate([`todo/task/${this.task._id}`]);
+    } else {
+      this.router.navigate(['todo/task-list']);
+    }
   }
 }
