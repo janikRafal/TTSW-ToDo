@@ -41,8 +41,17 @@ export const taskReducer = createReducer(
   on(taskActions.editTaskByIdSuccess, (state, { task }) => {
     return {
       ...state,
-      list: state.list?.map((item) => (item._id === task._id ? task : item)),
+      list: state.list?.map((task) => (task._id === task._id ? task : task)),
       detail: task,
+    };
+  }),
+
+  on(taskActions.removeTaskByIdSuccess, (state, { taskId }) => {
+    return {
+      ...state,
+      list: state.list?.filter((task) => task._id !== taskId),
+      detail:
+        state.detail && state.detail._id === taskId ? undefined : state.detail,
     };
   })
 );

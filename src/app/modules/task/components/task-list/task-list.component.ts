@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { IDictionary } from 'src/app/models/dictionary';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { getTasks } from '../../store/task.actions';
+import { getTasks, removeTaskById } from '../../store/task.actions';
 import { selectTaskList, selectTaskStatus } from '../../store/task.selectors';
 
 @Component({
@@ -53,20 +53,11 @@ export class TaskListComponent implements OnInit {
   }
 
   onTaskDelete(taskId: string, taskTitle: string): void {
-    // const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
-    // if (confirm(confirmText) === true) {
-    //   this.taskService
-    //     .removeTaskById(taskId)
-    //     .pipe(
-    //       switchMap(() => this.taskService.getDictionaries()),
-    //       tap((dictionaries) => {
-    //         this.dictionaryList = dictionaries;
-    //       }),
-    //       takeUntil(this.destroy$)
-    //     )
-    //     .subscribe();
-    // } else {
-    //   return;
-    // }
+    const confirmText = `Confirm that you REALLY want to remove this task:\n\n"${taskTitle}"`;
+    if (confirm(confirmText) === true) {
+      this.store.dispatch(removeTaskById({ taskId }));
+    } else {
+      return;
+    }
   }
 }

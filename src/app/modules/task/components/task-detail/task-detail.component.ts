@@ -1,14 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Observable, of } from 'rxjs';
-import {
-  takeUntil,
-  switchMap,
-  map,
-  tap,
-  first,
-  filter,
-  take,
-} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
+import { takeUntil, map, first, filter } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ITask } from 'src/app/models/task';
@@ -18,13 +10,12 @@ import {
   getTaskById,
   editTaskById,
   getTaskByIdSuccess,
-  editTaskByIdSuccess,
 } from '../../store/task.actions';
 import {
   selectTaskDetail,
   selectTaskFromStore,
-  selectTaskList,
 } from '../../store/task.selectors';
+
 @Component({
   selector: 'app-task-detail',
   templateUrl: './task-detail.component.html',
@@ -69,23 +60,16 @@ export class TaskDetailComponent implements OnInit {
   }
 
   onChangeStatus() {
-    this.task$
-      .pipe(
-        tap((task) => console.log('Received task:', task)),
-        first(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((task) => {
-        if (task) {
-          const taskWithToggledStatus = { ...task, status: !task.status };
-          console.log('Updated task:', taskWithToggledStatus);
+    this.task$.pipe(first(), takeUntil(this.destroy$)).subscribe((task) => {
+      if (task) {
+        const taskWithToggledStatus = { ...task, status: !task.status };
 
-          this.store.dispatch(editTaskById({ task: taskWithToggledStatus }));
-          // this.store.dispatch(
-          //   getTaskByIdSuccess({ task: taskWithToggledStatus })
-          // );
-        }
-      });
+        this.store.dispatch(editTaskById({ task: taskWithToggledStatus }));
+        // this.store.dispatch(
+        //   getTaskByIdSuccess({ task: taskWithToggledStatus })
+        // );
+      }
+    });
   }
 
   onGoBack() {

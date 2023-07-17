@@ -7,10 +7,8 @@
   ></p-button>
 </div>
 <p-divider></p-divider>
-<div
-  class="flex align-items-center justify-content-center"
-  *ngIf="dictionaryList$ | async as dictionaryList; else loading"
->
+
+<div *ngIf="dictionaryList$ | async as dictionaryList">
   <ng-container *ngIf="dictionaryList.length; else loading">
     <p-dataView #dv [value]="dictionaryList">
       <ng-template let-dictionary pTemplate="listItem">
@@ -65,10 +63,10 @@
       </ng-template>
     </p-dataView>
   </ng-container>
-</div>
 
-<ng-template #loading>
-  <div class="flex align-items-center justify-content-center">
-    <p-progressSpinner></p-progressSpinner>
-  </div>
-</ng-template>
+  <ng-template #loading>
+    <div class="flex align-items-center justify-content-center">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+  </ng-template>
+</div>

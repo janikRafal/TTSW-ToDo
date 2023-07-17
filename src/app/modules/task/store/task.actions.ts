@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { ITask } from 'src/app/models/task';
+import { TaskState } from './reducers';
 
 // ----- Get All Tasks ----- //
 
@@ -62,5 +63,22 @@ export const editTaskByIdSuccess = createAction(
 
 export const editTaskByIdFailure = createAction(
   '[Task Detail / Task Edit] Edit Task By ID - Failure',
+  props<{ error: any }>()
+);
+
+// ----- Remove Task By ID----- //
+
+export const removeTaskById = createAction(
+  '[Task List] Remove Task By ID',
+  props<{ taskId: string }>()
+);
+
+export const removeTaskByIdSuccess = createAction(
+  '[Task List] Remove Task By ID - Success',
+  props<{ taskId: string }>()
+);
+
+export const removeTaskByIdFailure = createAction(
+  '[Task List] Remove Task By ID - Failure',
   props<{ error: any }>()
 );

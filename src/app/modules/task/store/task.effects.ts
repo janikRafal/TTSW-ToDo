@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, act, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, tap, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -53,6 +53,22 @@ export class TaskEffects {
         this.taskService.editTaskByIdStore(action.task).pipe(
           map(() => taskActions.editTaskByIdSuccess({ task: action.task })),
           catchError((error) => of(taskActions.editTaskByIdFailure({ error })))
+        )
+      )
+    )
+  );
+
+  removeTaskById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(taskActions.removeTaskById),
+      mergeMap((action) =>
+        this.taskService.removeTaskByIdStore(action.taskId).pipe(
+          map(() =>
+            taskActions.removeTaskByIdSuccess({ taskId: action.taskId })
+          ),
+          catchError((error) =>
+            of(taskActions.removeTaskByIdFailure({ error }))
+          )
         )
       )
     )

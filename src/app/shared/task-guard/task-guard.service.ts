@@ -17,21 +17,22 @@ export class TaskGuard {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const taskId = route.paramMap.get('id');
-    if (taskId) {
-      return this.taskService.getTaskById(taskId).pipe(
-        tap((task) => {
-          if (!task) {
-            this.router.navigate(['/not-found']);
-          }
-        }),
-        map((task) => !!task),
-        catchError(() => {
-          this.router.navigate(['/not-found']);
-          return of(false);
-        })
-      );
-    }
-    return false;
+    // const taskId = route.paramMap.get('id');
+    // if (taskId) {
+    //   return this.taskService.getTaskById(taskId).pipe(
+    //     tap((task) => {
+    //       if (!task) {
+    //         this.router.navigate(['/not-found']);
+    //       }
+    //     }),
+    //     map((task) => !!task),
+    //     catchError(() => {
+    //       this.router.navigate(['/not-found']);
+    //       return of(false);
+    //     })
+    //   );
+    // }
+    // return false;
+    return true;
   }
 }

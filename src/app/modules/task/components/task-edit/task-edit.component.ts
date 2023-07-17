@@ -1,10 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TaskService } from '../../task.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ITask } from 'src/app/models/task';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { AppState } from 'src/app/reducers';
+import {
+  selectTaskDetail,
+  selectTaskFromStore,
+} from '../../store/task.selectors';
+import { getTaskById } from '../../store/task.actions';
 
 @Component({
   selector: 'app-task-edit',
@@ -12,8 +19,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./task-edit.component.scss'],
 })
 export class TaskEditComponent implements OnInit, OnDestroy {
-  task!: ITask | undefined;
+  task$!: Observable<ITask>;
   private destroy$ = new Subject<void>();
+
   taskForm = new FormGroup({
     title: new FormControl('', [
       Validators.required,
@@ -25,30 +33,38 @@ export class TaskEditComponent implements OnInit, OnDestroy {
   constructor(
     private taskService: TaskService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {
-    this.route.paramMap
+    const taskId = this.route.snapshot.paramMap.get('id')!;
+
+    this.store
       .pipe(
-        switchMap((params) => {
-          const taskId = params.get('id');
-          if (!taskId) {
-            throw new Error('Task ID is missing in the route');
+        select(selectTaskDetail),
+        takeUntil(this.destroy$),
+        switchMap((taskDetail) => {
+          if (taskDetail && taskDetail._id === taskId) {
+            return of(taskDetail);
+          } else {
+            return this.store.pipe(
+              select(selectTaskFromStore(taskId)),
+              take(1),
+              tap((taskFromList) => {
+                if (!taskFromList) {
+                  this.store.dispatch(getTaskById({ taskId }));
+                }
+              }),
+              switchMap(() => this.store.pipe(select(selectTaskDetail)))
+            );
           }
-          return this.taskService.getTaskById(taskId);
-        }),
-        takeUntil(this.destroy$)
+        })
       )
       .subscribe((task) => {
-        this.task = task;
-
-        if (this.task) {
-          const { title, description } = this.task;
-          this.taskForm.patchValue({
-            title,
-            description,
-          });
+        if (task) {
+          this.taskForm.get('title')?.setValue(task.title);
+          this.taskForm.get('description')?.setValue(task.description);
         }
       });
 
@@ -69,31 +85,24 @@ export class TaskEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.task) {
-      this.taskService
-        .editTaskById({ ...this.task, title, description: description ?? '' })
-        .subscribe();
-      this.router.navigate([`todo/task/${this.task._id}`]);
-    }
+    // this.router.navigate([`todo/task/${this.task._id}`]);
   }
 
   onGoBack() {
-    const { title, description } = this.taskForm.value;
-    const confirmText =
-      'Are you sure you want to go back? Changes will be lost.';
-
-    if (
-      this.task &&
-      (this.task.title !== title || this.task.description !== description) &&
-      !confirm(confirmText)
-    ) {
-      return;
-    }
-
-    if (this.task?._id) {
-      this.router.navigate([`todo/task/${this.task._id}`]);
-    } else {
-      this.router.navigate(['todo/task-list']);
-    }
+    // const { title, description } = this.taskForm.value;
+    // const confirmText =
+    //   'Are you sure you want to go back? Changes will be lost.';
+    // if (
+    //   this.task &&
+    //   (this.task.title !== title || this.task.description !== description) &&
+    //   !confirm(confirmText)
+    // ) {
+    //   return;
+    // }
+    // if (this.task?._id) {
+    //   this.router.navigate([`todo/task/${this.task._id}`]);
+    // } else {
+    //   this.router.navigate(['todo/task-list']);
+    // }
   }
 }
