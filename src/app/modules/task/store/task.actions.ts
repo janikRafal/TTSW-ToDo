@@ -47,3 +47,20 @@ export const addNewTaskFailure = createAction(
   '[Task Form] Add New Task - Failure',
   props<{ error: any }>()
 );
+
+// ----- Add New Task ----- //
+
+export const editTaskById = createAction(
+  '[Task Detail / Task Edit] Edit Task By ID',
+  props<{ task: ITask }>()
+);
+
+export const editTaskByIdSuccess = createAction(
+  '[Task Detail / Task Edit] Edit Task By ID - Success',
+  props<{ task: ITask }>()
+);
+
+export const editTaskByIdFailure = createAction(
+  '[Task Detail / Task Edit] Edit Task By ID - Failure',
+  props<{ error: any }>()
+);

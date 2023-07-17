@@ -36,6 +36,14 @@ export const taskReducer = createReducer(
 
   on(taskActions.addNewTaskSuccess, (state) => {
     return { ...state };
+  }),
+
+  on(taskActions.editTaskByIdSuccess, (state, { task }) => {
+    return {
+      ...state,
+      list: state.list?.map((item) => (item._id === task._id ? task : item)),
+      detail: task,
+    };
   })
 );
 

@@ -32,6 +32,16 @@ export class TaskService {
     return this.http.post<ITask>(this.apiUrl, task);
   }
 
+  editTaskByIdStore(task: ITask) {
+    const { _id, title, description, status } = task;
+
+    return this.http.put<ITask>(`${this.apiUrl}/${_id}`, {
+      title,
+      description,
+      status,
+    });
+  }
+
   //-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//-----//
 
   getTasks() {

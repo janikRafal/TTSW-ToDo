@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
+import { addNewTask } from '../../store/task.actions';
+import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-task-form',
@@ -17,7 +20,11 @@ export class TaskFormComponent {
     description: new FormControl(''),
   });
 
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(
+    private taskService: TaskService,
+    private router: Router,
+    private store: Store<AppState>
+  ) {}
 
   ngOnInit() {
     this.taskService.setHeader('Add a new task');
@@ -38,7 +45,7 @@ export class TaskFormComponent {
       status: false,
     };
 
-    this.taskService.addNewTask(newTask).subscribe();
+    this.store.dispatch(addNewTask({ task: newTask }));
     this.router.navigate(['todo/task-list']);
   }
 

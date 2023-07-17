@@ -7,7 +7,7 @@ import { IDictionary } from 'src/app/models/dictionary';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
 import { getTasks } from '../../store/task.actions';
-import { selectTaskList } from '../../store/task.selectors';
+import { selectTaskList, selectTaskStatus } from '../../store/task.selectors';
 
 @Component({
   selector: 'app-task-list',
@@ -40,8 +40,8 @@ export class TaskListComponent implements OnInit {
     this.taskService.setHeader('List of all tasks');
   }
 
-  getTaskStatus(id: string) {
-    return this.taskService.getTaskStatusById(id);
+  getTaskStatus(taskId: string) {
+    return this.store.pipe(select(selectTaskStatus(taskId)));
   }
 
   onTaskDetail(taskId: string) {

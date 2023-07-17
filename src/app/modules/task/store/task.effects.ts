@@ -46,6 +46,18 @@ export class TaskEffects {
     )
   );
 
+  editTaskById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(taskActions.editTaskById),
+      mergeMap((action) =>
+        this.taskService.editTaskByIdStore(action.task).pipe(
+          map(() => taskActions.editTaskByIdSuccess({ task: action.task })),
+          catchError((error) => of(taskActions.editTaskByIdFailure({ error })))
+        )
+      )
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private taskService: TaskService,
