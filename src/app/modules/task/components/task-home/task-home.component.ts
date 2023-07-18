@@ -34,7 +34,7 @@ export class TaskHomeComponent {
       .pipe(
         takeUntil(this.destroy$),
         tap((requestCount) => {
-          if (requestCount >= 20) {
+          if (requestCount >= 90) {
             this.apiService.fetchTasks(true).subscribe((tasks) => {
               this.store.dispatch(getTasksSuccess({ tasks }));
             });
@@ -44,7 +44,6 @@ export class TaskHomeComponent {
               .fetchNewApiUrl()
               .pipe(
                 tap(() => {
-                  // Store new API key in local storage
                   localStorage.setItem('api_key', this.apiService.apiKey);
                 }),
                 switchMap(() => {
@@ -62,6 +61,7 @@ export class TaskHomeComponent {
                       })
                     );
 
+                    // this.apiService.setRequestCountSubject(tasks.length);
                     return forkJoin(tasksRequests);
                   } else {
                     return of([]);

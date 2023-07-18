@@ -3,12 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { ITask } from 'src/app/models/task';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  public apiKey = '996dda23a7404c23b9772d499b3b701e';
+  public apiKey = environment.api_key;
   public apiUrl = `https://crudcrud.com/api/${this.apiKey}/todo`;
 
   private requestCountSubject = new BehaviorSubject<number>(0);

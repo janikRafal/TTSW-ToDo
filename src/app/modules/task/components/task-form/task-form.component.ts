@@ -46,7 +46,7 @@ export class TaskFormComponent {
     };
 
     this.store.dispatch(addNewTask({ task: newTask }));
-    this.router.navigate(['todo/task-list']);
+    // this.router.navigate(['todo/task-list']);
   }
 
   onGoBack() {
