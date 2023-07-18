@@ -1,10 +1,11 @@
 import { Component, Input, ChangeDetectorRef } from '@angular/core';
 import { TaskService } from '../../task.service';
-import { Subject, take, takeUntil, tap } from 'rxjs';
+import { Subject, take, takeUntil, tap, forkJoin, switchMap, of } from 'rxjs';
 import { ApiService } from '../../api.service';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { getTasksSuccess } from '../../store/task.actions';
+import { selectTaskList } from '../../store/task.selectors';
 
 @Component({
   selector: 'app-task-home',
@@ -39,9 +40,34 @@ export class TaskHomeComponent {
             });
             this.apiService.setRequestCountSubject(0);
 
-            this.apiService.fetchNewApiUrl().subscribe(() => {
-              this.taskService.apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
-            });
+            this.apiService
+              .fetchNewApiUrl()
+              .pipe(
+                switchMap(() => {
+                  this.taskService.apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
+
+                  return this.store.select(selectTaskList).pipe(take(1));
+                }),
+                switchMap((tasks) => {
+                  if (tasks) {
+                    const tasksRequests = tasks.map((task) =>
+                      this.taskService.addNewTask({
+                        title: task.title,
+                        description: task.description,
+                        status: task.status,
+                      })
+                    );
+
+                    return forkJoin(tasksRequests);
+                  } else {
+                    return of([]);
+                  }
+                })
+              )
+              .subscribe({
+                next: (tasks) => console.log('Tasks added: ', tasks),
+                error: (err) => console.error('Error: ', err),
+              });
           }
         })
       )
