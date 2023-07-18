@@ -1,22 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
+import { ITask } from 'src/app/models/task';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  public apiKey = 'f1dee3a011b3464884786847a2209d3d';
-  public requestCount = 0;
+  public apiKey = '996dda23a7404c23b9772d499b3b701e';
+  public apiUrl = `https://crudcrud.com/api/${this.apiKey}/todo`;
+
+  private requestCountSubject = new BehaviorSubject<number>(0);
+  public requestCount$ = this.requestCountSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  incrementRequestCount(): void {
-    this.requestCount++;
+  public incrementRequestCount(): void {
+    const currentCount = this.requestCountSubject.getValue();
+    this.requestCountSubject.next(currentCount + 1);
   }
 
-  fetchNewApiUrl() {
+  public setRequestCountSubject(amountOfRequest: number): void {
+    this.requestCountSubject.next(amountOfRequest);
+  }
+
+  public fetchNewApiUrl() {
     return this.http
       .get('https://crudcrud.com/', { responseType: 'text' })
       .pipe(
@@ -37,7 +46,7 @@ export class ApiService {
       );
   }
 
-  checkRequestsAmount(): Observable<number> {
+  public checkRequestsAmount(): Observable<number> {
     const url = `https://crudcrud.com/Dashboard/${this.apiKey}`;
 
     return this.http.get(url, { responseType: 'text' }).pipe(
@@ -45,9 +54,9 @@ export class ApiService {
         const regex = /<div class="title">(\d+) \/ 100<\/div>/;
         const match = response.match(regex);
         if (match) {
-          console.log('Amount of request:', parseInt(match[1]));
-          this.requestCount = parseInt(match[1]);
-          return parseInt(match[1]);
+          const requestCount = parseInt(match[1]);
+          this.requestCountSubject.next(requestCount);
+          return requestCount;
         } else {
           console.log('No match found');
           return 100;
@@ -56,8 +65,15 @@ export class ApiService {
       catchError((error) => {
         console.error(error);
         return throwError(error);
-      }),
-      tap(() => console.log(this.requestCount))
+      })
     );
+  }
+
+  public fetchTasks(skipInterceptor = false): Observable<ITask[]> {
+    let options = {};
+    if (skipInterceptor) {
+      options = { params: new HttpParams().set('skipInterceptor', 'true') };
+    }
+    return this.http.get<ITask[]>(this.apiUrl, options);
   }
 }

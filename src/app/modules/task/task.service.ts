@@ -10,7 +10,7 @@ import { ApiService } from './api.service';
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
+  public apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
 
   private pageHeader = new BehaviorSubject<string>('To-Do App');
   public pageHeader$ = this.pageHeader.asObservable();

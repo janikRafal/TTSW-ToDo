@@ -25,11 +25,9 @@ export class LimitInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    this.apiService.incrementRequestCount();
-    console.log(
-      'console from interceptor, request count: ',
-      this.apiService.requestCount
-    );
+    if (!request.params.has('skipInterceptor')) {
+      this.apiService.incrementRequestCount();
+    }
     return next.handle(request);
   }
 }
