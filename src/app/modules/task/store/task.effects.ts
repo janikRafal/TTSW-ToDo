@@ -37,7 +37,7 @@ export class TaskEffects {
     this.actions$.pipe(
       ofType(taskActions.addNewTask),
       mergeMap((action) =>
-        this.taskService.addNewTaskStore(action.task).pipe(
+        this.taskService.addNewTask(action.task).pipe(
           map(() => taskActions.addNewTaskSuccess()),
           catchError((error) => of(taskActions.addNewTaskFailure({ error }))),
           tap(() => this.router.navigateByUrl('/todo/task-list'))
@@ -50,7 +50,7 @@ export class TaskEffects {
     this.actions$.pipe(
       ofType(taskActions.editTaskById),
       mergeMap((action) =>
-        this.taskService.editTaskByIdStore(action.task).pipe(
+        this.taskService.editTaskById(action.task).pipe(
           map(() => taskActions.editTaskByIdSuccess({ task: action.task })),
           catchError((error) => of(taskActions.editTaskByIdFailure({ error })))
         )
@@ -62,7 +62,7 @@ export class TaskEffects {
     this.actions$.pipe(
       ofType(taskActions.removeTaskById),
       mergeMap((action) =>
-        this.taskService.removeTaskByIdStore(action.taskId).pipe(
+        this.taskService.removeTaskById(action.taskId).pipe(
           map(() =>
             taskActions.removeTaskByIdSuccess({ taskId: action.taskId })
           ),
