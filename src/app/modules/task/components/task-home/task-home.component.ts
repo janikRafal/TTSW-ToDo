@@ -43,6 +43,10 @@ export class TaskHomeComponent {
             this.apiService
               .fetchNewApiUrl()
               .pipe(
+                tap(() => {
+                  // Store new API key in local storage
+                  localStorage.setItem('api_key', this.apiService.apiKey);
+                }),
                 switchMap(() => {
                   this.taskService.apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
 
