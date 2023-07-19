@@ -9,13 +9,17 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  public apiKey = environment.api_key;
+  public apiKey!: string;
   public apiUrl = `https://crudcrud.com/api/${this.apiKey}/todo`;
 
   private requestCountSubject = new BehaviorSubject<number>(0);
   public requestCount$ = this.requestCountSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const savedApiKey = localStorage.getItem('api_key');
+
+    this.apiKey = savedApiKey ? savedApiKey : environment.api_key;
+  }
 
   public incrementRequestCount(): void {
     const currentCount = this.requestCountSubject.getValue();

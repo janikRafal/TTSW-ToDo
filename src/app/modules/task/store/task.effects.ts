@@ -51,9 +51,11 @@ export class TaskEffects {
       ofType(taskActions.editTaskById),
       mergeMap((action) =>
         this.taskService.editTaskById(action.task).pipe(
-          map(() => taskActions.editTaskByIdSuccess({ task: action.task })),
+          map(() => {
+            this.router.navigate([`todo/task/${action.task._id}`]);
+            return taskActions.editTaskByIdSuccess({ task: action.task });
+          }),
           catchError((error) => of(taskActions.editTaskByIdFailure({ error })))
-          // tap(() => this.router.navigateByUrl('/todo/task-list'))
         )
       )
     )

@@ -5,19 +5,14 @@
   </p-card>
 
   <p-card header="API Status">
-    <p-divider></p-divider>
     <div class="flex flex-column row-gap-2 mb-4">
       <div class="font-medium">Current API Key:</div>
       <div class="flex align-items-center gap-2">
-        <p-button
-          [cdkCopyToClipboard]="currentApiKey"
-          icon="pi pi-copy"
-          label=""
-          styleClass="p-button-raised p-button-text p-button-sm"
-        ></p-button>
         <div
-          class="white-space-nowrap overflow-hidden text-overflow-ellipsis w-full md:w-6"
+          class="white-space-nowrap overflow-hidden text-overflow-ellipsis w-min click-to-copy"
+          [cdkCopyToClipboard]="currentApiKey"
         >
+          <i class="pi pi-copy"></i>
           {{ currentApiKey }}
         </div>
       </div>

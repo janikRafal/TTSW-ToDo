@@ -17,7 +17,7 @@ export class TaskHomeComponent {
   @Input()
   protected pageHeader!: string;
   protected requestCount!: number;
-  protected currentApiKey: string = environment.api_key;
+  protected currentApiKey: string = this.apiService.apiKey;
   private destroy$ = new Subject<void>();
 
   constructor(

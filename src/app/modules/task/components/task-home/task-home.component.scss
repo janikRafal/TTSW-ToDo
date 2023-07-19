@@ -1,11 +1,9 @@
-/* Dla całego kontenera p-progressBar */
 div.progress-bar-container {
   position: relative;
   display: flex;
   justify-content: center;
 }
 
-/* Dla elementu "40%" */
 div.progress-bar-label {
   position: absolute;
   top: 50%;
@@ -14,4 +12,18 @@ div.progress-bar-label {
   z-index: 10;
   line-height: 1.5rem;
   color: #ffffff;
+}
+
+.click-to-copy {
+  cursor: pointer;
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  transition: background-color 0.3s ease;
+}
+
+.click-to-copy:hover {
+  background-color: #e9ecef;
 }
