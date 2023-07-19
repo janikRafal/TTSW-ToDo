@@ -35,7 +35,7 @@ export class ApiService {
           const match = response.match(regex);
           if (match) {
             this.apiKey = match[1];
-            console.log('API KEY:', this.apiKey);
+            console.log('NEW API KEY:', this.apiKey);
           } else {
             console.log('No URL found');
           }
@@ -55,7 +55,8 @@ export class ApiService {
         const regex = /<div class="title">(\d+) \/ 100<\/div>/;
         const match = response.match(regex);
         if (match) {
-          const requestCount = parseInt(match[1]);
+          // While checking, the next request is already being made for each view, so that's why we add +1.
+          const requestCount = parseInt(match[1]) + 1;
           this.requestCountSubject.next(requestCount);
           return requestCount;
         } else {

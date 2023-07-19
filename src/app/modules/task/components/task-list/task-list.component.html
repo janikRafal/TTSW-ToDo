@@ -43,6 +43,7 @@
                 class="flex align-items-center w-full sm:w-auto justify-content-end gap-3"
               >
                 <p-button
+                  [id]="dictionary.id"
                   icon="pi pi-trash"
                   (click)="onTaskDelete(dictionary.id, dictionary.label)"
                   styleClass="p-button-rounded p-button-danger p-button-text p-button-raised"

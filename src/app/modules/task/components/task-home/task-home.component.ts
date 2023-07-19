@@ -5,7 +5,8 @@ import { ApiService } from '../../api.service';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { getTasksSuccess } from '../../store/task.actions';
-import { selectTaskList } from '../../store/task.selectors';
+import { selectTaskList, selectTaskState } from '../../store/task.selectors';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-task-home',
@@ -15,6 +16,8 @@ import { selectTaskList } from '../../store/task.selectors';
 export class TaskHomeComponent {
   @Input()
   protected pageHeader!: string;
+  protected requestCount!: number;
+  protected currentApiKey: string = environment.api_key;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -34,17 +37,20 @@ export class TaskHomeComponent {
       .pipe(
         takeUntil(this.destroy$),
         tap((requestCount) => {
+          this.requestCount = requestCount;
+
           if (requestCount >= 90) {
             this.apiService.fetchTasks(true).subscribe((tasks) => {
               this.store.dispatch(getTasksSuccess({ tasks }));
             });
-            this.apiService.setRequestCountSubject(0);
+            this.apiService.setRequestCountSubject(1);
 
             this.apiService
               .fetchNewApiUrl()
               .pipe(
                 tap(() => {
                   localStorage.setItem('api_key', this.apiService.apiKey);
+                  this.currentApiKey = this.apiService.apiKey;
                 }),
                 switchMap(() => {
                   this.taskService.apiUrl = `https://crudcrud.com/api/${this.apiService.apiKey}/todo`;
@@ -61,7 +67,6 @@ export class TaskHomeComponent {
                       })
                     );
 
-                    // this.apiService.setRequestCountSubject(tasks.length);
                     return forkJoin(tasksRequests);
                   } else {
                     return of([]);
@@ -69,7 +74,10 @@ export class TaskHomeComponent {
                 })
               )
               .subscribe({
-                next: (tasks) => console.log('Tasks added: ', tasks),
+                next: (tasks) => {
+                  this.store.dispatch(getTasksSuccess({ tasks })),
+                    this.apiService.setRequestCountSubject(tasks.length);
+                },
                 error: (err) => console.error('Error: ', err),
               });
           }

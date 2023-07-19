@@ -22,6 +22,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import * as fromTask from './store/reducers';
 import { TaskEffects } from './store/task.effects';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { TaskEffects } from './store/task.effects';
     SharedModule,
     ProgressSpinnerModule,
     SkeletonModule,
+    ProgressBarModule,
     StoreModule.forFeature(fromTask.taskFeatureKey, fromTask.taskReducer),
     EffectsModule.forFeature([TaskEffects]),
   ],

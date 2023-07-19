@@ -39,8 +39,8 @@ export class TaskEffects {
       mergeMap((action) =>
         this.taskService.addNewTask(action.task).pipe(
           map(() => taskActions.addNewTaskSuccess()),
-          catchError((error) => of(taskActions.addNewTaskFailure({ error })))
-          // tap(() => this.router.navigateByUrl('/todo/task-list'))
+          catchError((error) => of(taskActions.addNewTaskFailure({ error }))),
+          tap(() => this.router.navigateByUrl('/todo/task-list'))
         )
       )
     )
