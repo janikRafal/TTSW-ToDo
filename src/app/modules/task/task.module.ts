@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { TaskRoutingModule } from './task-routing.module';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
@@ -46,6 +47,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
     ProgressSpinnerModule,
     SkeletonModule,
     ProgressBarModule,
+    ClipboardModule,
     StoreModule.forFeature(fromTask.taskFeatureKey, fromTask.taskReducer),
     EffectsModule.forFeature([TaskEffects]),
   ],
