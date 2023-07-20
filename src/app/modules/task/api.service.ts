@@ -39,7 +39,6 @@ export class ApiService {
           const match = response.match(regex);
           if (match) {
             this.apiKey = match[1];
-            console.log('NEW API KEY:', this.apiKey);
           } else {
             console.log('No URL found');
           }

@@ -86,7 +86,7 @@ export class TaskEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const updatedTask = { ...this.task, title, description: description || '' };
+    const updatedTask = { ...this.task, title, description: description ?? '' };
 
     this.store.dispatch(editTaskById({ task: updatedTask }));
     // this.router.navigate([`todo/task/${this.task._id}`]);

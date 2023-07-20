@@ -31,8 +31,8 @@ export class TaskListComponent implements OnInit {
       map(
         (tasks) =>
           tasks?.map((task) => ({
-            id: task._id || '',
-            label: task.title || '',
+            id: task._id ?? '',
+            label: task.title ?? '',
           })) || []
       )
     );

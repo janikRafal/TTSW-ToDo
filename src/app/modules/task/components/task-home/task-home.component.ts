@@ -83,9 +83,7 @@ export class TaskHomeComponent {
           }
         })
       )
-      .subscribe((requestCount) => {
-        console.log('Request count: ', requestCount);
-      });
+      .subscribe();
 
     this.taskService.pageHeader$
       .pipe(takeUntil(this.destroy$))
